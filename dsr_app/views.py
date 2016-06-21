@@ -17,7 +17,7 @@ user = 'nathanvc'
 pswd = '5698'
 dbname = 'dsr_db2'
 con = None
-con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5432)
 W = np.load('LMNN_mat1.npy')
 print W.shape
 
@@ -55,6 +55,11 @@ print W.shape
 @app.route('/input')
 def donor_input():
     return render_template("input.html")
+
+@app.route('/presentation')     
+def pres_page():
+    return render_template("presentation.html")
+
 
 @app.route('/myplot')
 def getplot():
@@ -131,82 +136,90 @@ def donor_output():
   query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
   
   query_results=pd.read_sql_query(query,con)
-  output = []
-  for i in range(0,query_results.shape[0]):
-      output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], weight=str(query_results.iloc[i]['weight']), offspcnt=str(query_results.iloc[i]['offspcnt'])))
-  
-  minweight=str(query_results.iloc[i]['weight']-5)
-  maxweight=str(query_results.iloc[i]['weight']+5)
-  
-  query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db2 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
-  query_sim_results=pd.read_sql_query(query_sim, con)
-#   output_sim = []
-#   for i in random.sample(range(query_sim_results.shape[0]), min(5, query_sim_results.shape[0])):
-#       output_sim.append(dict(bankid=query_sim_results.iloc[i]['bankid'], donorid=query_sim_results.iloc[i]['donorid'], weight=str(query_sim_results.iloc[i]['weight']), offspcnt=str(query_sim_results.iloc[i]['offspcnt'])))
-#   
-  # run model
-  d_orig_q = "SELECT * FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
-  d_orig = pd.read_sql_query(d_orig_q,con)
-  
-  prs_d=d_orig
-  prs_d = prs_d.drop('index', 1)
-  prs_d = prs_d.drop('offspcnt', 1)
-  prs_d = prs_d.drop('super', 1)
-  prs_d = prs_d.drop('alltext', 1)
-  prs_d = prs_d.drop('bankid', 1)
-  prs_d = prs_d.drop('donorid', 1)
-  prs_d = prs_d.drop('eyeexist', 1)  
-  prs_d=np.array(prs_d)
-  
-  d_all_q = "SELECT * FROM dsr_db2"
-  d_all = pd.read_sql_query(d_all_q,con)
-  
-  prs_a=d_all
-  prs_a = prs_a.drop('index', 1)
-  prs_a = prs_a.drop('offspcnt', 1)
-  prs_a = prs_a.drop('super', 1)
-  prs_a = prs_a.drop('alltext', 1)
-  prs_a = prs_a.drop('bankid', 1)
-  prs_a = prs_a.drop('donorid', 1)
-  prs_a = prs_a.drop('eyeexist', 1)
-  prs_a=np.array(prs_a)
-  
-  # donor info
-  prs_dinfo = pd.concat([d_all['bankid'], d_all['donorid']], axis=1)
-  #print prs_dinfo.head
-  
-  # Calculate all distances  
-  dist_cv=[]
-  prs_a_df=prs_a
-  prs_a=np.array(prs_a)
-  for i in range(prs_a.shape[0]):
-    dist=prs_d[:]-prs_a[i,:] 
-    lmnn_dist=float(np.sqrt(np.dot(dist,np.dot(W,dist.T))))
-    dist_cv.append(lmnn_dist)
-  
-  dist_dict={}
-  dist_dict['distance']=dist_cv
-  df_temp=pd.DataFrame.from_dict(dist_dict)
-  
-  prs_dinfo=pd.concat([prs_dinfo,df_temp],axis=1)
-  
-  print prs_dinfo.columns.values
-  
-  # sort by smallest distance
-  prs_report = np.array(prs_dinfo.sort_values(by='distance').iloc[1:12])
 
-  #del output_sim
-  output_sim=[]
-  for i in range(10):
-    print '*'
-    print prs_report
-    dict_temp=dict(bankid=prs_report[i,0], donorid=prs_report[i,1], distance=prs_report[i,2])
-    print dict_temp
-    output_sim.append(dict_temp)
-        #print(i, output_sim[i])
+  if len(query_results)==0:
+        message = 'This donor is not in our database'
+        return render_template("errorpage.html", detection_message = message)
+  else: 
+
+      output = []
+      for i in range(0,query_results.shape[0]):
+          output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], weight=str(query_results.iloc[i]['weight']), offspcnt=str(query_results.iloc[i]['offspcnt'])))
   
-  #the_result = ModelIt(patient,births)
-  return render_template("output.html", donors = output, donors_sim = output_sim, the_result = [])    
+      minweight=str(query_results.iloc[i]['weight']-5)
+      maxweight=str(query_results.iloc[i]['weight']+5)
+  
+      query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db2 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
+      query_sim_results=pd.read_sql_query(query_sim, con)
+
+      # run model
+      d_orig_q = "SELECT * FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
+      d_orig = pd.read_sql_query(d_orig_q,con)
+  
+      prs_d=d_orig
+      prs_d = prs_d.drop('index', 1)
+      prs_d = prs_d.drop('offspcnt', 1)
+      prs_d = prs_d.drop('super', 1)
+      prs_d = prs_d.drop('alltext', 1)
+      prs_d = prs_d.drop('bankid', 1)
+      prs_d = prs_d.drop('donorid', 1)
+      prs_d = prs_d.drop('eyeexist', 1)  
+      prs_d=np.array(prs_d)
+  
+      d_all_q = "SELECT * FROM dsr_db2"
+      d_all = pd.read_sql_query(d_all_q,con)
+  
+      prs_a=d_all
+      prs_a = prs_a.drop('index', 1)
+      prs_a = prs_a.drop('offspcnt', 1)
+      prs_a = prs_a.drop('super', 1)
+      prs_a = prs_a.drop('alltext', 1)
+      prs_a = prs_a.drop('bankid', 1)
+      prs_a = prs_a.drop('donorid', 1)
+      prs_a = prs_a.drop('eyeexist', 1)
+      prs_a=np.array(prs_a)
+  
+      # donor info
+      prs_dinfo = pd.concat([d_all['bankid'], d_all['donorid']], axis=1)
+      #print prs_dinfo.head
+  
+      # Calculate all distances  
+      dist_cv=[]
+      prs_a_df=prs_a
+      prs_a=np.array(prs_a)
+      for i in range(prs_a.shape[0]):
+        dist=prs_d[:]-prs_a[i,:] 
+        lmnn_dist=float(np.sqrt(np.dot(dist,np.dot(W,dist.T))))
+        dist_cv.append(lmnn_dist)
+  
+      dist_dict={}
+      dist_dict['distance']=dist_cv
+      df_temp=pd.DataFrame.from_dict(dist_dict)
+  
+      prs_dinfo=pd.concat([prs_dinfo,df_temp],axis=1)
+  
+      print prs_dinfo.columns.values
+  
+      # sort by smallest distance
+      prs_report = np.array(prs_dinfo.sort_values(by='distance').iloc[1:12])
+
+      #del output_sim
+      output_sim=[]
+      for i in range(10):
+        print '*'
+        print prs_report
+        dict_temp=dict(bankid=prs_report[i,0], donorid=prs_report[i,1], distance=prs_report[i,2])
+        print dict_temp
+        output_sim.append(dict_temp)
+            #print(i, output_sim[i])
+  
+      if prs_report[0,2] < 2:
+        message = 'Your donor has a possible match'
+      else:
+        message = 'Your donor does not have a likely match'  
+  
+      #the_result = ModelIt(patient,births)
+      return render_template("output.html", donors = output, donors_sim = output_sim, detection_message = message, the_result = [])    
     
   
     

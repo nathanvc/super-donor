@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Super Donor Output Page</title>
+    <title>Super Donor Error Page</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -56,54 +56,11 @@
     
 <br><br>
 
- <div class="container">
+
+<div class="container">
     <div class="starter-template">
         <h2>{{ detection_message }}</h2>
-    </div>
-</div>
-
-    <div class="container">
-      <div class="starter-template">
-        <h3>Donor Features:</h3>
-        <p class="lead">This is your donor:</p>
-      </div>
-
-    
-      <table class="table table-hover"> 
-        <tr><th>Bank</th><th>Donor ID</th><th>Weight</th><th>Group Count</th><th>
-        {% for donor in donors %} 
-        <tr><td>{{ donor['bankid'] }}</td><td>{{ donor['donorid']}}</td><td>{{ donor['weight']}}</td><td> {{ donor['offspcnt'] }}</td></tr> 
-        {% endfor %} 
-      </table>
-
-
-     </div><!-- /.container -->
-     
-     
-    </div> <!-- /.container-->
-
-    <div class="container">
-      <div class="starter-template">
-        <h3>Similar Donors:</h3>
-        <p class="lead">These donors are most likely to be the same person: </p>
-      </div>
-
-    
-      <table class="table table-hover"> 
-        <tr><th>Bank</th><th>Donor ID</th><th>Distance</th></tr> 
-        {% for donor_sim in donors_sim %} 
-        <tr><td>{{ donor_sim['bankid'] }}</td><td>{{ donor_sim['donorid']}}</td><td>{{ donor_sim['distance']}}</td><td>
-        {% endfor %} 
-      </table>
-
-
-
-     </div><!-- /.container -->
-
-
- <div class="container">
-    <div class="starter-template">
-        <h3>Search another donor:</h3>
+        <p>Search another donor:</p>
     </div>
 
     <div class = "container">
@@ -178,20 +135,6 @@
 
   </div> <!-- /.container-->
 
-
-
-
-
-<!--
-        
-    <div class="container">
-      <div class="starter-template">
-        <h3>Super Donor Prediction:</h3>
-        <p class="lead">Donors with these features have {{the_result}} probability<br> of being "super donors" (>10 listed offspring)</p>
-      </div>
-
--->
-
       <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
       <script src="static/js/bootstrap.min.js"></script>
 
@@ -200,17 +143,6 @@
 
 
      </div><!-- /.container -->
-<!--
-
-    <div class="container">
-      <div class="starter-template">
-        <h3>Popularity of Features:</h3>
-        <p class="lead">Here's how this donor's features stack up in the whole group<br>
-        [FIGURE HERE]</p>
-      </div>
-      
--->
-            <!-- <img src="/myplot"> -->
             
       <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
       <script src="static/js/bootstrap.min.js"></script>

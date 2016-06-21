@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Starter Template for Bootstrap</title>
+    <title>Super Donor Input Page</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -48,8 +48,7 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#slides">Slides</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/presentation">Slides</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -67,14 +66,61 @@
     <div class = "container">
 
       <form  action="/output" method="GET">
-        <div class="form-group"
-          <label for="bank_id">Sperm Bank:</label>
-          <input type="text" id="bank_id" name='bank_id' placeholder="e.g. ">
+        <div class="form-group col-sm-4 floating-label-form-group controls">
+            <label for="bank_id"> Sperm Bank:</label>
+            <select class="form-control" name="bank_id" id="bank_id">
+                <option value="AndroNW" name="bank_id">Andrology Northwest Laboratory</option>
+                <option value="AnnArbor" name="bank_id">Ann Arbor Reproductive Assoc</option>
+                <option value="Biogenetics" name="bank_id">Biogenetics</option>
+                <option value="BosIVF" name="bank_id">Boston IVF</option>
+                <option value="Canam" name="bank_id">Can-Am Cryo</option>
+                <option value="CCB" name="bank_id">California CryoBank</option>
+                <option value="Cryobio" name="bank_id">Cryobiology</option>
+                <option value="CryogamCO" name="bank_id">Cryogam Colorado</option>
+                <option value="Cryogen" name="bank_id">Cryogenic Laboratory</option>
+                <option value="Cryos" name="bank_id">Cryos International</option>
+                <option value="CryosNY" name="bank_id">Cryos NY</option>
+                <option value="EBMC" name="bank_id">East Bay Medical Center</option>
+                <option value="ESB" name="bank_id">European Sperm Bank USA</option>
+                <option value="Fairfax" name="bank_id">Fairfax</option>
+                <option value="FCCA" name="bank_id">Fertility center of CA</option>
+                <option value="FertFirst" name="bank_id">Fertility First</option>
+                <option value="FINO" name="bank_id">Fertility Institute of New Orleans</option>
+                <option value="Follas" name="bank_id">Follas Laboratories, Inc.</option>
+                <option value="GeorgiaRS" name="bank_id">Georgia Reproductive Specialists</option>
+                <option value="GG" name="bank_id">Growing Generations</option>
+                <option value="HC" name="bank_id">Heredity Choice</option>
+                <option value="Idant" name="bank_id">Idant</option>
+                <option value="IntCryo" name="bank_id">International Cryogenics</option>
+                <option value="MSB" name="bank_id">Manhattan Sperm Bank</option>
+                <option value="Midwest" name="bank_id">Midwest Sperm Bank</option>
+                <option value="NECC" name="bank_id">New England Cryogenic Center</option>
+                <option value="NoCASB" name="bank_id">Northern CA Sperm Bank</option>
+                <option value="NWCryo" name="bank_id">Northwest Cryobank</option>
+                <option value="OHSU" name="bank_id">Oregon Health & Science University</option>
+                <option value="Paces" name="bank_id">Paces</option>
+                <option value="PRS" name="bank_id">Pacific Reproductive Services</option>
+                <option value="ProTech" name="bank_id">Procreative Technologies</option>
+                <option value="RepGerm" name="bank_id">Repository for Germinal Choice</option>
+                <option value="Reprolab" name="bank_id">Repro Lab, Inc.</option>
+                <option value="ReproRes" name="bank_id">Reproductive Resources</option>
+                <option value="Repromed" name="bank_id">Repromed</option>
+                <option value="RochReg" name="bank_id">Rochester Regional</option>
+                <option value="RMC" name="bank_id">Rocky Mountain Cryobank</option>
+                <option value="TSBC" name="bank_id">The Sperm Bank of CA</option>
+                <option value="Tyler" name="bank_id">Tyler Medical Center</option>
+                <option value="Valley" name="bank_id">Valley Cryobank</option>
+                <option value="Xytex" name="bank_id">Xytex</option>
+                <option value="Zygen" name="bank_id">Zygen</option>         
+            </select>
         </div>
         
         <div class="form-group">
-          <label for="donor_id">Donor ID:</label>
-          <input type="text" id="donor_id" name='donor_id' placeholder="e.g. ">
+        <div class="row">
+            <div class="form-group col-sm-4 floating-label-form-group controls">
+                <label for="donor_id">Donor ID:</label>
+                <input type="text" id="donor_id" name='donor_id' placeholder="e.g. 150" class="form-control">
+            </div>
         </div>
 
         <div>
