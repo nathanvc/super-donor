@@ -26,17 +26,19 @@ import psycopg2
 from a_Model import ModelIt
 import random
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 import io
 import numpy as np
 
-user = 'nathanvc' #add your username here (same as previous postgreSQL)                      
-host = 'localhost'
+user = 'nathanvc' #add your username here (same as previous postgreSQL)        #host = 'localhost'
+pswd = '5698'
 dbname = 'dsr_db2'
-db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
+#db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
+#db = create_engine('postgresql://%s:%s@localhost/%s'%(user,pswd,dbname))
 con = None
-con = psycopg2.connect(database = dbname, user = user)
-W = np.load('LMNN_mat1.npy', mmap_mode=None, allow_pickle=True, fix_imports=True, encoding='ASCII')
+#con = psycopg2.connect(database = dbname, user = user, port=5433)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
+W = np.load('LMNN_mat1.npy')
 
 print W.shape
 
