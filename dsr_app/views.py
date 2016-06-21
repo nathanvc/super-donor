@@ -1,19 +1,3 @@
-# from flask import render_template
-# from flaskexample import app
-# 
-# 
-# @app.route('/')
-# @app.route('/index')
-# # def index():
-# #     return "Hello, World!"
-# def index():
-#    user = { 'nickname': 'Miguel' } # fake user
-#    return render_template("index.html",
-#        title = 'Home',
-#        user = user)
-#        
-       
-# Example for SQL query
 from __future__ import division
 from flask import render_template
 from flask import request
@@ -26,60 +10,51 @@ import psycopg2
 from a_Model import ModelIt
 import random
 import matplotlib.pyplot as plt
-#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-import io
+#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvasimport io
 import numpy as np
 
-user = 'nathanvc' #add your username here (same as previous postgreSQL)        #host = 'localhost'
+user = 'nathanvc' 
 pswd = '5698'
 dbname = 'dsr_db2'
-#db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
-#db = create_engine('postgresql://%s:%s@localhost/%s'%(user,pswd,dbname))
 con = None
-#con = psycopg2.connect(database = dbname, user = user, port=5433)
 con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
 W = np.load('LMNN_mat1.npy')
-
 print W.shape
 
-@app.route('/')
-@app.route('/index')
-def index():
-    return render_template("index.html",
-       title = 'Home', user = { 'nickname': 'Everyone!' },
-       )
+#@app.route('/')
+#@app.route('/index')
+#def index():
+#    return render_template("index.html",
+#       title = 'Home', user = { 'nickname': 'Everyone!' },
+#       )
 
-@app.route('/db')
-def rawquery_page():
-    sql_query = """                                                                       
-                SELECT * FROM dsr_db2 WHERE bankid = 'TSBC';          
-                """
-    query_results = pd.read_sql_query(sql_query,con)
-    results = ""
-    for i in range(0,10):
-        results += str(query_results.iloc[i]['weight'])
-        results += str("<br>")
-    return results
+#@app.route('/db')
+#def rawquery_page():
+#    sql_query = """                                                                       
+#                SELECT * FROM dsr_db2 WHERE bankid = 'TSBC';          
+#                """
+#    query_results = pd.read_sql_query(sql_query,con)
+#    results = ""
+#    for i in range(0,10):
+#        results += str(query_results.iloc[i]['weight'])
+#        results += str("<br>")
+#    return results
         
-@app.route('/db_fancy')
-def rawquery_page_fancy():
-    sql_query = """
-               SELECT bankid, donorid, offspcnt FROM dsr_db2 WHERE bankid = 'TSBC';
-                """
-    query_results=pd.read_sql_query(sql_query,con)
-    output = []
-    for i in range(0,query_results.shape[0]):
-        output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], offspcnt=str(query_results.iloc[i]['offspcnt'])))
-    return render_template('dsr_initial.html',donors=output)
-    
+#@app.route('/db_fancy')
+#def rawquery_page_fancy():
+#    sql_query = """
+#               SELECT bankid, donorid, offspcnt FROM dsr_db2 WHERE bankid = 'TSBC';
+#                """
+#    query_results=pd.read_sql_query(sql_query,con)
+#    output = []
+#    for i in range(0,query_results.shape[0]):
+#        output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], offspcnt=str(query_results.iloc[i]['offspcnt'])))
+#    return render_template('dsr_initial.html',donors=output)
+
+@app.route('/')     
 @app.route('/input')
 def donor_input():
     return render_template("input.html")
-# 
-# # @app.route('/output')
-# # def cesareans_output():
-# #     return render_template("output.html")
-#     
 
 @app.route('/myplot')
 def getplot():
