@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Super Donor Error Page</title>
+    <title>Starter Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -43,12 +43,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Super Donor</a>
+          <a class="navbar-brand" href="#">Project name</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/input">Home</a></li>
-            <li><a href="/presentation">Slides</a></li>
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -56,10 +57,9 @@
     
 <br><br>
 
- <div class="container">
-    <div class="starter-template">
-        <h2>{{ detection_message }}</h2>
-        <p>Search another donor:</p>
+ <div class="container"    <div class="starter-template">
+        <h2>Output Page</h2>
+        <p>Enter some user input</p>
     </div>
 
     <div class = "container">
@@ -84,6 +84,44 @@
     <script src="static/js/bootstrap.min.js"></script>
 
   </div> <!-- /.container-->
+
+    <div class="container">
+      <div class="starter-template">
+        <h3>Donor Features:</h3>
+        <p class="lead">This is your donor:</p>
+      </div>
+
+    
+      <table class="table table-hover"> 
+        <tr><th>Bank</th><th>Donor ID</th><th>Weight</th><th>Group Count</th><th>
+        {% for donor in donors %} 
+        <tr><td>{{ donor['bankid'] }}</td><td>{{ donor['donorid']}}</td><td>{{ donor['weight']}}</td><td> {{ donor['offspcnt'] }}</td></tr> 
+        {% endfor %} 
+      </table>
+
+
+     </div><!-- /.container -->
+     
+     
+    </div> <!-- /.container-->
+
+    <div class="container">
+      <div class="starter-template">
+        <h3>Similar Donors:</h3>
+        <p class="lead">These donors are similar to your donor: </p>
+      </div>
+
+    
+      <table class="table table-hover"> 
+        <tr><th>Bank</th><th>Donor ID</th><th>Distance</th></tr> 
+        {% for donor_sim in donors_sim %} 
+        <tr><td>{{ donor_sim['bankid'] }}</td><td>{{ donor_sim['donorid']}}</td><td>{{ donor_sim['distance']}}</td><td>
+        {% endfor %} 
+      </table>
+
+
+
+     </div><!-- /.container -->
 
 <!--
         
