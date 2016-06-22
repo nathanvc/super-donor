@@ -70,9 +70,9 @@
 
     
       <table class="table table-hover"> 
-        <tr><th>Bank</th><th>Donor ID</th><th>Weight</th><th>Group Count</th><th>
+        <tr><th>Bank</th><th>Donor ID</th><th>Weight</th><th>Eye Color</th><th>Group Count</th><th>
         {% for donor in donors %} 
-        <tr><td>{{ donor['bankid'] }}</td><td>{{ donor['donorid']}}</td><td>{{ donor['weight']}}</td><td> {{ donor['offspcnt'] }}</td></tr> 
+        <tr><td>{{ donor['bankid'] }}</td><td>{{ donor['donorid']}}</td><td>{{ donor['weight']}}</td><td>{{ donor['eyecolor']}}</td><td> {{ donor['offspcnt'] }}</td></tr> 
         {% endfor %} 
       </table>
 

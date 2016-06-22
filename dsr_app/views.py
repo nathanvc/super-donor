@@ -21,35 +21,18 @@ con = psycopg2.connect(database = dbname, user = user, host='localhost', passwor
 W = np.load('LMNN_mat1.npy')
 print W.shape
 
-#@app.route('/')
-#@app.route('/index')
-#def index():
-#    return render_template("index.html",
-#       title = 'Home', user = { 'nickname': 'Everyone!' },
-#       )
-
-#@app.route('/db')
-#def rawquery_page():
-#    sql_query = """                                                                       
-#                SELECT * FROM dsr_db2 WHERE bankid = 'TSBC';          
-#                """
-#    query_results = pd.read_sql_query(sql_query,con)
-#    results = ""
-#    for i in range(0,10):
-#        results += str(query_results.iloc[i]['weight'])
-#        results += str("<br>")
-#    return results
-        
-#@app.route('/db_fancy')
-#def rawquery_page_fancy():
-#    sql_query = """
-#               SELECT bankid, donorid, offspcnt FROM dsr_db2 WHERE bankid = 'TSBC';
-#                """
-#    query_results=pd.read_sql_query(sql_query,con)
-#    output = []
-#    for i in range(0,query_results.shape[0]):
-#        output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], offspcnt=str(query_results.iloc[i]['offspcnt'])))
-#    return render_template('dsr_initial.html',donors=output)
+# pull eye color for a particular donor
+def eye_out(bank, id, con)
+    label = ''
+    query = "SELECT blue, brown, green, hazel FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    eye_temp = pd.read_sql_query(query,con)
+    eye_list = ['blue','brown','green','hazel']
+    for i,e in enumerate(eye_list):
+        if i > 1:
+            label = label + ', '
+        if eye_temp[e] == 1:
+            label = label + e
+    return label
 
 @app.route('/')     
 @app.route('/input')
@@ -59,7 +42,6 @@ def donor_input():
 @app.route('/presentation')     
 def pres_page():
     return render_template("presentation.html")
-
 
 @app.route('/myplot')
 def getplot():
@@ -126,7 +108,6 @@ def getdonorplot():
     img.seek(0)
     return send_file(img, mimetype='image/png')     
 
-
 @app.route('/output')
 def donor_output():
   #pull in the donor input fields and store
@@ -136,6 +117,8 @@ def donor_output():
   query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
   
   query_results=pd.read_sql_query(query,con)
+  
+  eye_lab = eye_out(bank, id, con)
 
   if len(query_results)==0:
         message = 'This donor is not in our database'
@@ -144,7 +127,7 @@ def donor_output():
 
       output = []
       for i in range(0,query_results.shape[0]):
-          output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], weight=str(query_results.iloc[i]['weight']), offspcnt=str(query_results.iloc[i]['offspcnt'])))
+          output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], weight=str(query_results.iloc[i]['weight']), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt'])))
   
       minweight=str(query_results.iloc[i]['weight']-5)
       maxweight=str(query_results.iloc[i]['weight']+5)
