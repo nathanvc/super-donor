@@ -17,7 +17,7 @@ user = 'nathanvc'
 pswd = '5698'
 dbname = 'dsr_db2'
 con = None
-con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5432)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
 W = np.load('LMNN_mat1.npy')
 print W.shape
 
