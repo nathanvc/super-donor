@@ -3,8 +3,8 @@ from flask import render_template
 from flask import request
 from flask import send_file
 from dsr_app import app
-from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
+#from sqlalchemy import create_engine
+#from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 import psycopg2
 from a_Model import ModelIt
@@ -17,21 +17,85 @@ user = 'nathanvc'
 pswd = '5698'
 dbname = 'dsr_db2'
 con = None
-con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5432)
 W = np.load('LMNN_mat1.npy')
 print W.shape
 
 # pull eye color for a particular donor
-def eye_out(bank, id, con)
+def eye_out(bank, id, con):
     label = ''
     query = "SELECT blue, brown, green, hazel FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     eye_temp = pd.read_sql_query(query,con)
     eye_list = ['blue','brown','green','hazel']
     for i,e in enumerate(eye_list):
-        if i > 1:
-            label = label + ', '
-        if eye_temp[e] == 1:
+        if np.array(eye_temp[e])==1:
+            if len(label) > 1:
+                label = label + ', '
             label = label + e
+        print label
+    return label
+    
+# pull eye color for a particular donor
+def weight_out(bank, id, con):
+    label = ''
+    query = "SELECT weight FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    weight_temp = pd.read_sql_query(query,con)
+    return round(float(weight_temp['weight']),2)
+    
+# pull eye color for a particular donor
+def offsp_out(bank, id, con):
+    label = ''
+    query = "SELECT offspcnt FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    offsp_temp = pd.read_sql_query(query,con)
+    return int(round(float(offsp_temp['offspcnt'])))
+
+# pull eye color for a particular donor
+def blood_out(bank, id, con):
+    label = ''
+    #query = "SELECT 'bloodtype=a+', 'bloodtype=b+', 'bloodtype=o+', 'bloodtype=ab+', 'bloodtype=a-', 'bloodtype=b-', 'bloodtype=o-', 'bloodtype=ab-'ff FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    #query = "SELECT 'bloodtype=a+' FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    blood_temp = pd.read_sql_query(query,con)
+    blood_list = ['bloodtype=a+', 'bloodtype=b+', 'bloodtype=o+', 'bloodtype=ab+', 
+                'bloodtype=a-', 'bloodtype=b-', 'bloodtype=o-', 'bloodtype=ab-']
+    for i,e in enumerate(blood_list):
+        if np.array(blood_temp[e])==1:
+            if len(label) > 0:
+                label = label + ', '
+            label = label + e
+        print label
+    return label
+
+# pull eye color for a particular donor
+def words_out(bank, id, con):
+    label = ''
+    query = "SELECT * FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    word_temp = pd.read_sql_query(query,con)
+    word_temp = word_temp.drop('index', 1)
+    word_temp = word_temp.drop('offspcnt', 1)
+    word_temp = word_temp.drop('super', 1)
+    word_temp = word_temp.drop('alltext', 1)
+    word_temp = word_temp.drop('bankid', 1)
+    word_temp = word_temp.drop('donorid', 1)
+    word_temp = word_temp.drop('eyeexist', 1)
+    word_temp = word_temp.drop('bloodtype=a+', 1)
+    word_temp = word_temp.drop('bloodtype=b+', 1)
+    word_temp = word_temp.drop('bloodtype=o+', 1)
+    word_temp = word_temp.drop('bloodtype=ab+', 1)
+    word_temp = word_temp.drop('bloodtype=a-', 1)
+    word_temp = word_temp.drop('bloodtype=b-', 1)
+    word_temp = word_temp.drop('bloodtype=o-', 1)
+    word_temp = word_temp.drop('bloodtype=ab-', 1)
+    word_temp = word_temp.drop('blue', 1)
+    word_temp = word_temp.drop('brown', 1)
+    word_temp = word_temp.drop('green', 1)
+    word_temp = word_temp.drop('hazel', 1)    
+
+    for i,e in enumerate(word_temp.columns.values):
+        if np.array(word_temp[e])==1:
+            if len(label) > 0:
+                label = label + ', '
+            label = label + e
+    print label
     return label
 
 @app.route('/')     
@@ -119,6 +183,9 @@ def donor_output():
   query_results=pd.read_sql_query(query,con)
   
   eye_lab = eye_out(bank, id, con)
+  words_lab = words_out(bank, id, con)
+  #blood_lab = blood_out(bank, id, con)
+  #blood_lab = ''
 
   if len(query_results)==0:
         message = 'This donor is not in our database'
@@ -127,7 +194,7 @@ def donor_output():
 
       output = []
       for i in range(0,query_results.shape[0]):
-          output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], weight=str(query_results.iloc[i]['weight']), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt'])))
+          output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], weight=str(round(query_results.iloc[i]['weight'],2)), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab))
   
       minweight=str(query_results.iloc[i]['weight']-5)
       maxweight=str(query_results.iloc[i]['weight']+5)
@@ -146,7 +213,10 @@ def donor_output():
       prs_d = prs_d.drop('alltext', 1)
       prs_d = prs_d.drop('bankid', 1)
       prs_d = prs_d.drop('donorid', 1)
-      prs_d = prs_d.drop('eyeexist', 1)  
+      prs_d = prs_d.drop('eyeexist', 1) 
+      
+      print prs_d.columns.values
+       
       prs_d=np.array(prs_d)
   
       d_all_q = "SELECT * FROM dsr_db2"
@@ -188,10 +258,14 @@ def donor_output():
 
       #del output_sim
       output_sim=[]
-      for i in range(10):
-        print '*'
-        print prs_report
-        dict_temp=dict(bankid=prs_report[i,0], donorid=prs_report[i,1], distance=prs_report[i,2])
+      for i in range(5):
+        bank=prs_report[i,0]
+        id=prs_report[i,1]
+        eye_lab = eye_out(bank, id, con)
+        weight_lab = weight_out(bank, id, con)
+        offsp_lab = offsp_out(bank, id, con)
+        words_lab = words_out(bank, id, con)
+        dict_temp=dict(bankid=bank, donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=round(prs_report[i,2],2), words=words_lab)
         print dict_temp
         output_sim.append(dict_temp)
             #print(i, output_sim[i])
