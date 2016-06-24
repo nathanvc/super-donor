@@ -115,14 +115,15 @@
             </select>
         </div>
         
-        <div class="form-group">
-        <div class="row">
-            <div class="form-group col-sm-4 floating-label-form-group controls">
-                <label for="donor_id">Donor ID:</label>
-                <input type="text" id="donor_id" name='donor_id' placeholder="e.g. 150" class="form-control">
-            </div>
+        <div class="form-group col-sm-4 floating-label-form-group controls">
+            <label for="donor_id"> Donor ID:</label>
+            <select class="form-control" name="donor_id" id="donor_id">
+            </select>
         </div>
-
+        </form>
+    </div> 
+        
+    <div class = "container">
         <div>
           <button type="submit" class="btn btn-default btn-lg">Find this Donor!</button>
         </div>
@@ -130,25 +131,21 @@
       </form>
     </div>
 
+    <script>
+        function loadids(value) {
+            $.ajax({
+                url: "/getIDs",
+                data: {pullbank: value},
+                success: function(results){
+                    $("#donor_id").html(results)
+                }
+            });
+        }
+    </script>
+
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
 
-  </div> <!-- /.container-->
-
-      <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-      <script src="static/js/bootstrap.min.js"></script>
-
-
-     </div><!-- /.container -->
-
-
-     </div><!-- /.container -->
-            
-      <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-      <script src="static/js/bootstrap.min.js"></script>
-
-
-     </div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript

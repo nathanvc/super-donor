@@ -85,14 +85,6 @@ def words_out(bank, id, con):
     word_temp = word_temp.drop('bloodtype=b-', 1)
     word_temp = word_temp.drop('bloodtype=o-', 1)
     word_temp = word_temp.drop('bloodtype=ab-', 1)
-#     word_temp = word_temp.drop('a+', 1)
-#     word_temp = word_temp.drop('b+', 1)
-#     word_temp = word_temp.drop('o+', 1)
-#     word_temp = word_temp.drop('ab+', 1)
-#     word_temp = word_temp.drop('a-', 1)
-#     word_temp = word_temp.drop('b-', 1)
-#     word_temp = word_temp.drop('o-', 1)
-#     word_temp = word_temp.drop('ab-', 1)
     word_temp = word_temp.drop('blue', 1)
     word_temp = word_temp.drop('brown', 1)
     word_temp = word_temp.drop('green', 1)
@@ -125,11 +117,8 @@ def pullbank():
     restr_id_df=pd.read_sql_query(query, con)
     id_button_list=''
     for id in restr_id_df['donorid']:
-        print id
         id_button_list=id_button_list + '<option value="' + id + '" name="donor_id">' + id + '</option>' 
     return id_button_list
-    #return '<option value="Biogenetics" name="bank_id">Biogenetics</option>'
-    #return '<option value="Hello!" name="donor_id">8</option>'
 
 @app.route('/myplot')
 def getplot():
