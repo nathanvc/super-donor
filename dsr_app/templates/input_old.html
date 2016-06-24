@@ -68,7 +68,7 @@
       <form  action="/output" method="GET">
         <div class="form-group col-sm-4 floating-label-form-group controls">
             <label for="bank_id"> Sperm Bank:</label>
-            <select class="form-control" name="bank_id" id="bank_id" onchange="loadids(this.value)">
+            <select class="form-control" name="bank_id" id="bank_id">
                 <option value="AndroNW" name="bank_id">Andrology Northwest Laboratory</option>
                 <option value="AnnArbor" name="bank_id">Ann Arbor Reproductive Assoc</option>
                 <option value="Biogenetics" name="bank_id">Biogenetics</option>
@@ -115,23 +115,13 @@
             </select>
         </div>
         
-        
-        <form  action="/output" method="GET">
-        <div class="form-group col-sm-4 floating-label-form-group controls">
-            <label for="donor_id"> Donor ID:</label>
-            <select class="form-control" name="donor_id" id="donor_id">
-
-            </select>
-        </div>
-        
-        <!--
         <div class="form-group">
         <div class="row">
-            <label for="donor_id">Donor ID:</label>
-            <div id="donor_id_container" class="form-group col-sm-4 floating-label-form-group controls">
-
+            <div class="form-group col-sm-4 floating-label-form-group controls">
+                <label for="donor_id">Donor ID:</label>
+                <input type="text" id="donor_id" name='donor_id' placeholder="e.g. 150" class="form-control">
             </div>
-        </div> -->
+        </div>
 
         <div>
           <button type="submit" class="btn btn-default btn-lg">Find this Donor!</button>
@@ -139,20 +129,6 @@
 
       </form>
     </div>
-
-    <script>
-    function loadids(value) {
-        //alert(value);
-        //currentQuery=$("#myQuery").val()
-        $.ajax({
-            url: "/getIDs",
-            data: {pullbank: value},
-            success: function(results){
-                $("#donor_id").html(results)
-            }
-        });
-    }
-    </script>
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
