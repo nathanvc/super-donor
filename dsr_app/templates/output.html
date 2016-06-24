@@ -103,11 +103,12 @@
     <div class="starter-template">
         <h3>Search another donor:</h3>
     </div>
-    <form  action="/output" method="GET">
-      <div class = "container">
+</div>
+<form  action="/output" method="GET">
+    <div class = "container">
         <div class="form-group col-sm-4 floating-label-form-group controls">
             <label for="bank_id"> Sperm Bank:</label>
-            <select class="form-control" name="bank_id" id="bank_id">
+            <select class="form-control" name="bank_id" id="bank_id" onchange="loadids(this.value)">
                 <option value="AndroNW" name="bank_id">Andrology Northwest Laboratory</option>
                 <option value="AnnArbor" name="bank_id">Ann Arbor Reproductive Assoc</option>
                 <option value="Biogenetics" name="bank_id">Biogenetics</option>
@@ -153,19 +154,18 @@
                 <option value="Zygen" name="bank_id">Zygen</option>         
             </select>
         </div>
-        
+
         <div class="form-group col-sm-4 floating-label-form-group controls">
             <label for="donor_id"> Donor ID:</label>
-                <select class="form-control" name="donor_id" id="donor_id">
+            <select class="form-control" name="donor_id" id="donor_id">
 
-                </select>
-            </div>
-        </div> 
+            </select>
+        </div>
+    </div> <!-- container -->
         
-        <div class = "container">
-            <div>
-                <button type="submit" class="btn btn-default btn-lg">Find this Donor!</button>
-            </div>
+    <div class = "container">
+        <div>
+            <button type="submit" class="btn btn-default btn-lg">Find this Donor!</button>
         </div>
     </div>
 </form>
