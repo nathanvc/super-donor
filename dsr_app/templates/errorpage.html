@@ -62,10 +62,9 @@
         <h2>{{ detection_message }}</h2>
         <p>Search another donor:</p>
     </div>
-
-    <div class = "container">
-
-      <form  action="/output" method="GET">
+    
+    <form  action="/output" method="GET">
+      <div class = "container">
         <div class="form-group col-sm-4 floating-label-form-group controls">
             <label for="bank_id"> Sperm Bank:</label>
             <select class="form-control" name="bank_id" id="bank_id">
@@ -120,16 +119,14 @@
             <select class="form-control" name="donor_id" id="donor_id">
             </select>
         </div>
-        </form>
     </div> 
         
     <div class = "container">
         <div>
           <button type="submit" class="btn btn-default btn-lg">Find this Donor!</button>
         </div>
-
-      </form>
     </div>
+</form>
 
     <script>
         function loadids(value) {
