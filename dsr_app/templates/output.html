@@ -106,6 +106,8 @@
 </div>
 <form  action="/output" method="GET">
     <div class = "container">
+        <div class = "row">
+        <div class = "col-sm-2"></div>
         <div class="form-group col-sm-4 floating-label-form-group controls">
             <label for="bank_id"> Sperm Bank:</label>
             <select class="form-control" name="bank_id" id="bank_id" onchange="loadids(this.value)">
@@ -161,13 +163,17 @@
 
             </select>
         </div>
+        <div class = "col-sm-2"></div>
+        </div>
     </div> <!-- container -->
-        
+       
+    <center> 
     <div class = "container">
         <div>
             <button type="submit" class="btn btn-default btn-lg">Find this Donor!</button>
         </div>
     </div>
+    </center>
 </form>
     
     <script>
