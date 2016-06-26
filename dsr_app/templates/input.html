@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,7 +18,7 @@
     <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="starter-template.css" rel="stylesheet">
+    <link href="../static/css/starter-template.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -48,7 +47,7 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="/presentation">Slides</a></li>
+            <li><a href="/presentation">About</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -58,13 +57,16 @@
 
 <div class="container">
     <div class="starter-template">
-        <h2>Find matches for your donor:</h2>
-        <p>Enter information for your sperm donor:</p>
+        <h1>SUPER DONOR</h1>
+        <h2>Duplicate Sperm Donor Predictor</h2>        
     </div>
 </div>
 <form  action="/output" method="GET">
     <div class = "container">
+        <div class = "row">
+        <div class = "col-sm-2"></div>
         <div class="form-group col-sm-4 floating-label-form-group controls">
+            <h4>Enter information for your donor</h4>
             <label for="bank_id"> Sperm Bank:</label>
             <select class="form-control" name="bank_id" id="bank_id" onchange="loadids(this.value)">
                 <option value="AndroNW" name="bank_id">Andrology Northwest Laboratory</option>
@@ -114,18 +116,23 @@
         </div>
 
         <div class="form-group col-sm-4 floating-label-form-group controls">
+            <h4>&nbsp</h4>
             <label for="donor_id"> Donor ID:</label>
             <select class="form-control" name="donor_id" id="donor_id">
 
             </select>
         </div>
+        <div class = "col-sm-2"></div>
+        </div>
     </div> <!-- container -->
         
+    <center>
     <div class = "container">
         <div>
             <button type="submit" class="btn btn-default btn-lg">Find this Donor!</button>
         </div>
     </div>
+    </center>
 </form>
 
     <script>
