@@ -262,7 +262,7 @@ def donor_output():
   
   eye_lab = eye_out(bank, id, con)
   (words_lab, wordcount) = words_out(bank, id, con)
-  bank_lab = bank_out(bank):
+  #bank_lab = bank_out(bank):
   #blood_lab = blood_out(bank, id, con)
   #blood_lab = ''
 
