@@ -275,7 +275,7 @@ def donor_output():
 
       output = []
       for i in range(0,query_results.shape[0]):
-          output.append(dict(bankid=query_results.iloc[i]['bankid'], donorid=query_results.iloc[i]['donorid'], weight=str(round(query_results.iloc[i]['weight'],2)), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab))
+          output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=str(round(query_results.iloc[i]['weight'],2)), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab))
   
       minweight=str(query_results.iloc[i]['weight']-5)
       maxweight=str(query_results.iloc[i]['weight']+5)
@@ -346,7 +346,8 @@ def donor_output():
         weight_lab = weight_out(bank, id, con)
         offsp_lab = offsp_out(bank, id, con)
         (words_lab, wordcount) = words_out(bank, id, con)
-        dict_temp=dict(bankid=bank, donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=round(prs_report[i,2],2), words=words_lab)
+        
+        dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=round(prs_report[i,2],2), words=words_lab)
         print dict_temp
         output_sim.append(dict_temp)
             #print(i, output_sim[i])
