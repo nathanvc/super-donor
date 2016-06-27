@@ -116,7 +116,7 @@ def pullbank():
     
     restr_id_df=pd.read_sql_query(query, con)
     id_button_list=''
-    for id in restr_id_df['donorid']:
+    for id in restr_id_df['donorid'].sort_values():
         id_button_list=id_button_list + '<option value="' + id + '" name="donor_id">' + id + '</option>' 
     return id_button_list
 
@@ -204,6 +204,9 @@ def donor_output():
   if len(query_results)==0:
         message = 'This donor is not in our database'
         return render_template("errorpage.html", detection_message = message)
+
+  elif len(words_lab)<=4:
+        message = 'There is not enough information for this donor to predict a match'
   else: 
 
       output = []
