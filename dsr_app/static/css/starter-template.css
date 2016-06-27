@@ -1,6 +1,8 @@
 body {
   padding-top: 50px;
-  background: #94b8b8;
+  background: #afd7d7
+  /* background: #b3cccc; */
+  /* background: #94b8b8; */
   /* background: #79d2a6; */
 }
 .starter-template {
@@ -8,5 +10,5 @@ body {
   text-align: center;
 }
 table {
-  font-size: 28px;
+  font-size: 24px;
 }
