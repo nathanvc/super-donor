@@ -65,20 +65,20 @@ bank_dict['Tyler']='Tyler Medical Center'
 bank_dict['Valley']='Valley Cryobank'
 bank_dict['Xytex']='Xytex'
 bank_dict['Zygen']='Zygen'
-# 
-# word_dict={}
-# word_dict['educ']='education'
-# word_dict['colleg']='college'
-# word_dict['econom']='economics'
-# word_dict['wavi']='wavy'
-# word_dict['protest']='protestant'
 
-# 
-# def get_full_word(e):
-#     if e in word_dict:
-#         return word_dict[e]
-#     else:
-#         return e
+word_dict={}
+word_dict['educ']='education'
+word_dict['colleg']='college'
+word_dict['econom']='economics'
+word_dict['wavi']='wavy'
+word_dict['protest']='protestant'
+
+# return revised word if it is in dictionary (to correct for stemming readability)
+def get_full_word(e):
+    if e in word_dict:
+        return word_dict[e]
+    else:
+        return e
 
 # pull eye color for a particular donor
 def eye_out(bank, id, con):
@@ -154,8 +154,8 @@ def words_out(bank, id, con):
         if np.array(word_temp[e])==1:
             if len(label) > 0:
                 label = label + ', '
-            #fw = get_full_word(e)
-            label = label + e
+            fw = get_full_word(e)
+            label = label + fw
             wordcount = wordcount+1            
     print label
     return (label, wordcount)
