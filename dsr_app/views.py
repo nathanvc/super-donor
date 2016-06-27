@@ -90,13 +90,15 @@ def words_out(bank, id, con):
     word_temp = word_temp.drop('green', 1)
     word_temp = word_temp.drop('hazel', 1)    
 
+    wordcount = 0
     for i,e in enumerate(word_temp.columns.values):
         if np.array(word_temp[e])==1:
             if len(label) > 0:
                 label = label + ', '
             label = label + e
+            wordcount = wordcount+1
     print label
-    return label
+    return (label, wordcount)
 
 # function to query for donor IDs by ban
 
@@ -197,7 +199,7 @@ def donor_output():
   query_results=pd.read_sql_query(query,con)
   
   eye_lab = eye_out(bank, id, con)
-  words_lab = words_out(bank, id, con)
+  words_lab, wordcount = words_out(bank, id, con)
   #blood_lab = blood_out(bank, id, con)
   #blood_lab = ''
 
@@ -205,7 +207,7 @@ def donor_output():
         message = 'This donor is not in our database'
         return render_template("errorpage.html", detection_message = message)
 
-  elif len(words_lab)<=4:
+  elif wordcount <= 4:
         message = 'There is not enough information for this donor to predict a match'
   else: 
 
