@@ -23,7 +23,7 @@ print W.shape
 
 bank_dict={}
 bank_dict['AndroNW']='Andrology Northwest Laboratory'
-bank_dict['AnnArbor']='Ann Arbor Reproductive Assoc
+bank_dict['AnnArbor']='Ann Arbor Reproductive Assoc'
 bank_dict['Biogenetics']='Biogenetics'
 bank_dict['BosIVF']='Boston IVF'
 bank_dict['Canam']='Can-Am Cryo'
@@ -64,7 +64,7 @@ bank_dict['TSBC']='The Sperm Bank of CA'
 bank_dict['Tyler']='Tyler Medical Center'
 bank_dict['Valley']='Valley Cryobank'
 bank_dict['Xytex']='Xytex'
-bank_dict['Zygen']='Zygen'}  
+bank_dict['Zygen']='Zygen'
 # 
 # word_dict={}
 # word_dict['educ']='education'
