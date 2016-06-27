@@ -199,7 +199,7 @@ def donor_output():
   query_results=pd.read_sql_query(query,con)
   
   eye_lab = eye_out(bank, id, con)
-  words_lab, wordcount = words_out(bank, id, con)
+  (words_lab, wordcount) = words_out(bank, id, con)
   #blood_lab = blood_out(bank, id, con)
   #blood_lab = ''
 
