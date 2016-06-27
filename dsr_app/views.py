@@ -21,50 +21,50 @@ con = psycopg2.connect(database = dbname, user = user, host='localhost', passwor
 W = np.load('LMNN_mat1.npy')
 print W.shape
 
-# bank_dict={}
-# bank_dict['AndroNW']='Andrology Northwest Laboratory'
-# bank_dict['AnnArbor']='Ann Arbor Reproductive Assoc
-# bank_dict['Biogenetics']='Biogenetics'
-# bank_dict['BosIVF']='Boston IVF'
-# bank_dict['Canam']='Can-Am Cryo'
-# bank_dict['CCB']='California CryoBank'
-# bank_dict['Cryobio']='Cryobiology'
-# bank_dict['CryogamCO']='Cryogam Colorado'
-# bank_dict['Cryogen']='Cryogenic Laboratory'
-# bank_dict['Cryos']='Cryos International'
-# bank_dict['CryosNY']='Cryos NY'
-# bank_dict['EBMC']='East Bay Medical Center'
-# bank_dict['ESB']='European Sperm Bank USA'
-# bank_dict['Fairfax']='Fairfax'
-# bank_dict['FCCA']='Fertility center of CA'
-# bank_dict['FertFirst']='Fertility First'
-# bank_dict['FINO']='Fertility Institute of New Orleans'
-# bank_dict['Follas']='Follas Laboratories, Inc.'
-# bank_dict['GeorgiaRS']='Georgia Reproductive Specialists'
-# bank_dict['GG']='Growing Generations'
-# bank_dict['HC']='Heredity Choice'
-# bank_dict['Idant']='Idant'
-# bank_dict['IntCryo']='International Cryogenics'
-# bank_dict['MSB']='Manhattan Sperm Bank'
-# bank_dict['Midwest']='Midwest Sperm Bank'
-# bank_dict['NECC']='New England Cryogenic Center'
-# bank_dict['NoCASB']='Northern CA Sperm Bank'
-# bank_dict['NWCryo']='Northwest Cryobank'
-# bank_dict['OHSU']='Oregon Health & Science University'
-# bank_dict['Paces']='Paces'
-# bank_dict['PRS']='Pacific Reproductive Services'
-# bank_dict['ProTech']='Procreative Technologies'
-# bank_dict['RepGerm']='Repository for Germinal Choice'
-# bank_dict['Reprolab']='Repro Lab, Inc.'
-# bank_dict['ReproRes']='Reproductive Resources'
-# bank_dict['Repromed']='Repromed'
-# bank_dict['RochReg']='Rochester Regional'
-# bank_dict['RMC']='Rocky Mountain Cryobank'
-# bank_dict['TSBC']='The Sperm Bank of CA'
-# bank_dict['Tyler']='Tyler Medical Center'
-# bank_dict['Valley']='Valley Cryobank'
-# bank_dict['Xytex']='Xytex'
-# bank_dict['Zygen']='Zygen'}  
+bank_dict={}
+bank_dict['AndroNW']='Andrology Northwest Laboratory'
+bank_dict['AnnArbor']='Ann Arbor Reproductive Assoc
+bank_dict['Biogenetics']='Biogenetics'
+bank_dict['BosIVF']='Boston IVF'
+bank_dict['Canam']='Can-Am Cryo'
+bank_dict['CCB']='California CryoBank'
+bank_dict['Cryobio']='Cryobiology'
+bank_dict['CryogamCO']='Cryogam Colorado'
+bank_dict['Cryogen']='Cryogenic Laboratory'
+bank_dict['Cryos']='Cryos International'
+bank_dict['CryosNY']='Cryos NY'
+bank_dict['EBMC']='East Bay Medical Center'
+bank_dict['ESB']='European Sperm Bank USA'
+bank_dict['Fairfax']='Fairfax'
+bank_dict['FCCA']='Fertility center of CA'
+bank_dict['FertFirst']='Fertility First'
+bank_dict['FINO']='Fertility Institute of New Orleans'
+bank_dict['Follas']='Follas Laboratories, Inc.'
+bank_dict['GeorgiaRS']='Georgia Reproductive Specialists'
+bank_dict['GG']='Growing Generations'
+bank_dict['HC']='Heredity Choice'
+bank_dict['Idant']='Idant'
+bank_dict['IntCryo']='International Cryogenics'
+bank_dict['MSB']='Manhattan Sperm Bank'
+bank_dict['Midwest']='Midwest Sperm Bank'
+bank_dict['NECC']='New England Cryogenic Center'
+bank_dict['NoCASB']='Northern CA Sperm Bank'
+bank_dict['NWCryo']='Northwest Cryobank'
+bank_dict['OHSU']='Oregon Health & Science University'
+bank_dict['Paces']='Paces'
+bank_dict['PRS']='Pacific Reproductive Services'
+bank_dict['ProTech']='Procreative Technologies'
+bank_dict['RepGerm']='Repository for Germinal Choice'
+bank_dict['Reprolab']='Repro Lab, Inc.'
+bank_dict['ReproRes']='Reproductive Resources'
+bank_dict['Repromed']='Repromed'
+bank_dict['RochReg']='Rochester Regional'
+bank_dict['RMC']='Rocky Mountain Cryobank'
+bank_dict['TSBC']='The Sperm Bank of CA'
+bank_dict['Tyler']='Tyler Medical Center'
+bank_dict['Valley']='Valley Cryobank'
+bank_dict['Xytex']='Xytex'
+bank_dict['Zygen']='Zygen'}  
 # 
 # word_dict={}
 # word_dict['educ']='education'
@@ -73,8 +73,6 @@ print W.shape
 # word_dict['wavi']='wavy'
 # word_dict['protest']='protestant'
 
-# def bank_out(bank):
-#     return bank_dict[bank]
 # 
 # def get_full_word(e):
 #     if e in word_dict:
@@ -262,7 +260,7 @@ def donor_output():
   
   eye_lab = eye_out(bank, id, con)
   (words_lab, wordcount) = words_out(bank, id, con)
-  #bank_lab = bank_out(bank):
+  bank_lab = bank_dict[bank]
   #blood_lab = blood_out(bank, id, con)
   #blood_lab = ''
 
