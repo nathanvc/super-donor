@@ -209,6 +209,7 @@ def donor_output():
 
   elif wordcount <= 4:
         message = 'There is not enough information for this donor to predict a match'
+        return render_template("errorpage.html", detection_message = message)
   else: 
 
       output = []
@@ -283,7 +284,7 @@ def donor_output():
         eye_lab = eye_out(bank, id, con)
         weight_lab = weight_out(bank, id, con)
         offsp_lab = offsp_out(bank, id, con)
-        words_lab = words_out(bank, id, con)
+        (words_lab, wordcount) = words_out(bank, id, con)
         dict_temp=dict(bankid=bank, donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=round(prs_report[i,2],2), words=words_lab)
         print dict_temp
         output_sim.append(dict_temp)
