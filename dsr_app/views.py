@@ -3,8 +3,6 @@ from flask import render_template
 from flask import request
 from flask import send_file
 from dsr_app import app
-#from sqlalchemy import create_engine
-#from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 import psycopg2
 from a_Model import ModelIt
@@ -12,12 +10,13 @@ import random
 import matplotlib.pyplot as plt
 #from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvasimport io
 import numpy as np
+import string
 
 user = 'nathanvc' 
 pswd = '5698'
 dbname = 'dsr_db3'
 con = None
-con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5432)
 W = np.load('LMNN_mat3.npy')
 print W.shape
 
@@ -111,16 +110,15 @@ def offsp_out(bank, id, con):
 # pull eye color for a particular donor
 def blood_out(bank, id, con):
     label = ''
-    #query = "SELECT 'bloodtype=a+', 'bloodtype=b+', 'bloodtype=o+', 'bloodtype=ab+', 'bloodtype=a-', 'bloodtype=b-', 'bloodtype=o-', 'bloodtype=ab-'ff FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = """SELECT "a+", "b+", "o+", "ab+", "a-", "b-", "o-", "ab-" FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'""" % (bank, id)
     #query = "SELECT 'bloodtype=a+' FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     blood_temp = pd.read_sql_query(query,con)
-    blood_list = ['bloodtype=a+', 'bloodtype=b+', 'bloodtype=o+', 'bloodtype=ab+', 
-                'bloodtype=a-', 'bloodtype=b-', 'bloodtype=o-', 'bloodtype=ab-']
+    blood_list = ['a+', 'b+', 'o+', 'ab+', 'a-', 'b-', 'o-', 'ab-']
     for i,e in enumerate(blood_list):
         if np.array(blood_temp[e])==1:
             if len(label) > 0:
                 label = label + ', ' 
-            label = label + e
+            label = label + e.upper()
         print label
     return label
 
@@ -136,14 +134,14 @@ def words_out(bank, id, con):
     word_temp = word_temp.drop('bankid', 1)
     word_temp = word_temp.drop('donorid', 1)
     word_temp = word_temp.drop('eyeexist', 1)
-    word_temp = word_temp.drop('bloodtype=a+', 1)
-    word_temp = word_temp.drop('bloodtype=b+', 1)
-    word_temp = word_temp.drop('bloodtype=o+', 1)
-    word_temp = word_temp.drop('bloodtype=ab+', 1)
-    word_temp = word_temp.drop('bloodtype=a-', 1)
-    word_temp = word_temp.drop('bloodtype=b-', 1)
-    word_temp = word_temp.drop('bloodtype=o-', 1)
-    word_temp = word_temp.drop('bloodtype=ab-', 1)
+    word_temp = word_temp.drop('a+', 1)
+    word_temp = word_temp.drop('b+', 1)
+    word_temp = word_temp.drop('o+', 1)
+    word_temp = word_temp.drop('ab+', 1)
+    word_temp = word_temp.drop('a-', 1)
+    word_temp = word_temp.drop('b-', 1)
+    word_temp = word_temp.drop('o-', 1)
+    word_temp = word_temp.drop('ab-', 1)
     word_temp = word_temp.drop('blue', 1)
     word_temp = word_temp.drop('brown', 1)
     word_temp = word_temp.drop('green', 1)
@@ -192,60 +190,60 @@ def getplot():
     img.seek(0)
     return send_file(img, mimetype='image/png')  
     
-@app.route('/donorplot')
-def getdonorplot():
-    bank = request.args.get('bank_id')
-    id = request.args.get('donor_id')
-    
-    fig = plt.figure()
-    
-    query = "SELECT bankid, donorid, offspcnt, bloodtype, weight FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
-  
-    query_results=pd.read_sql_query(query,con)
-    
-    # eye color value for this donor
-    eyes_sp=query_results['eyes'][0]
-  
-    # calculate proportion of donors with this eye color 
-    # (only among donors with eye color reported)
-    don_eye_num_query = "SELECT COUNT(eyes) FROM dsr_db3 WHERE eyes = '%s' " % eyes_sp
-    don_eye_num_from_sql = pd.read_sql_query(don_eye_num_query, con)
-    
-    don_eye_num = don_eye_num_from_sql['count'][0]
-
-    don_eye_den_query = """
-    SELECT COUNT(eyes) FROM dsr_db3 WHERE eyes IS NOT NULL
-    """
-    don_eye_den_from_sql = pd.read_sql_query(don_eye_den_query, con)
-    don_eye_den = don_eye_den_from_sql['count'][0]
-    
-    don_val = don_eye_num / don_eye_den
-    
-    # calculate proportion of offspring conceived via donors with this eye color 
-    # (only among donors with eye color reported)
-    off_eye_num_query = "SELECT SUM(offspcnt) FROM dsr_db1 WHERE eyes = '%s' " % eyes_sp
-    print off_eye_num_query
-    off_eye_num_from_sql = pd.read_sql_query(off_eye_num_query, con)
-    off_eye_num = off_eye_num_from_sql['sum'][0]
-
-    off_eye_den_query = """
-    SELECT SUM(offspcnt) FROM dsr_db1 WHERE eyes IS NOT NULL
-    """
-    print off_eye_den_query
-    off_eye_den_from_sql = pd.read_sql_query(off_eye_den_query, con)
-    off_eye_den = off_eye_den_from_sql['sum'][0]
-    
-    off_val = off_eye_num / off_eye_den
-
-    plt.plot([don_val, off_val])
-    
-    ylim([0,1])
-    
-    canvas = FigureCanvas(fig)
-    img = io.BytesIO()
-    fig.savefig(img)
-    img.seek(0)
-    return send_file(img, mimetype='image/png')     
+# @app.route('/donorplot')
+# def getdonorplot():
+#     bank = request.args.get('bank_id')
+#     id = request.args.get('donor_id')
+#     
+#     fig = plt.figure()
+#     
+#     query = "SELECT bankid, donorid, offspcnt, bloodtype, weight FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
+#   
+#     query_results=pd.read_sql_query(query,con)
+#     
+#     # eye color value for this donor
+#     eyes_sp=query_results['eyes'][0]
+#   
+#     # calculate proportion of donors with this eye color 
+#     # (only among donors with eye color reported)
+#     don_eye_num_query = "SELECT COUNT(eyes) FROM dsr_db3 WHERE eyes = '%s' " % eyes_sp
+#     don_eye_num_from_sql = pd.read_sql_query(don_eye_num_query, con)
+#     
+#     don_eye_num = don_eye_num_from_sql['count'][0]
+# 
+#     don_eye_den_query = """
+#     SELECT COUNT(eyes) FROM dsr_db3 WHERE eyes IS NOT NULL
+#     """
+#     don_eye_den_from_sql = pd.read_sql_query(don_eye_den_query, con)
+#     don_eye_den = don_eye_den_from_sql['count'][0]
+#     
+#     don_val = don_eye_num / don_eye_den
+#     
+#     # calculate proportion of offspring conceived via donors with this eye color 
+#     # (only among donors with eye color reported)
+#     off_eye_num_query = "SELECT SUM(offspcnt) FROM dsr_db1 WHERE eyes = '%s' " % eyes_sp
+#     print off_eye_num_query
+#     off_eye_num_from_sql = pd.read_sql_query(off_eye_num_query, con)
+#     off_eye_num = off_eye_num_from_sql['sum'][0]
+# 
+#     off_eye_den_query = """
+#     SELECT SUM(offspcnt) FROM dsr_db1 WHERE eyes IS NOT NULL
+#     """
+#     print off_eye_den_query
+#     off_eye_den_from_sql = pd.read_sql_query(off_eye_den_query, con)
+#     off_eye_den = off_eye_den_from_sql['sum'][0]
+#     
+#     off_val = off_eye_num / off_eye_den
+# 
+#     plt.plot([don_val, off_val])
+#     
+#     ylim([0,1])
+#     
+#     canvas = FigureCanvas(fig)
+#     img = io.BytesIO()
+#     fig.savefig(img)
+#     img.seek(0)
+#     return send_file(img, mimetype='image/png')     
 
 @app.route('/output')
 def donor_output():
@@ -261,21 +259,21 @@ def donor_output():
   eye_lab = eye_out(bank, id, con)
   (words_lab, wordcount) = words_out(bank, id, con)
   bank_lab = bank_dict[bank]
-  #blood_lab = blood_out(bank, id, con)
+  blood_lab = blood_out(bank, id, con)
   #blood_lab = ''
 
   if len(query_results)==0:
         message = 'This donor is not in our database'
         return render_template("errorpage.html", detection_message = message)
 
-  elif wordcount <= 4:
+  elif wordcount <= 0:
         message = 'There is not enough information for this donor to predict a match'
         return render_template("errorpage.html", detection_message = message)
   else: 
 
       output = []
       for i in range(0,query_results.shape[0]):
-          output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=str(round(query_results.iloc[i]['weight'],2)), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab))
+          output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=str(round(query_results.iloc[i]['weight'],2)), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab, bloodtype=blood_lab))
   
       minweight=str(query_results.iloc[i]['weight']-5)
       maxweight=str(query_results.iloc[i]['weight']+5)
@@ -345,9 +343,10 @@ def donor_output():
         eye_lab = eye_out(bank, id, con)
         weight_lab = weight_out(bank, id, con)
         offsp_lab = offsp_out(bank, id, con)
+        blood_lab = blood_out(bank, id, con)
         (words_lab, wordcount) = words_out(bank, id, con)
         
-        dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=round(prs_report[i,2],2), words=words_lab)
+        dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=round(prs_report[i,2],2), words=words_lab, bloodtype=blood_lab)
         print dict_temp
         output_sim.append(dict_temp)
             #print(i, output_sim[i])

@@ -70,9 +70,9 @@
 
     
       <table class="table table-hover"> 
-        <tr><th>Bank</th><th>ID#</th><th>Weight</th><th>Eye Color</th><th>Group Size</th><th>Description</th><th>
+        <tr><th>Bank</th><th>ID#</th><th>Weight(lbs)</th><th>Eyes</th><th>Blood Type</th><th>Description</th><th>
         {% for donor in donors %} 
-        <tr><td>{{ donor['bankid'] }}</td><td>{{ donor['donorid']}}</td><td>{{ donor['weight']}}</td><td>{{ donor['eyecolor']}}</td><td> {{ donor['offspcnt'] }}</td><td style="font-size: 18px">{{ donor['words']}}</td></tr> 
+        <tr><td>{{ donor['bankid'] }}</td><td>{{ donor['donorid']}}</td><td>{{ donor['weight']}}</td><td>{{ donor['eyecolor']}}</td><td> {{ donor['bloodtype'] }}</td><td style="font-size: 18px">{{ donor['words']}}</td></tr> 
         {% endfor %} 
       </table>
 
@@ -90,9 +90,9 @@
 
     
       <table class="table table-hover"> 
-        <tr><th>Distance</th><th>Bank</th><th>ID#</th><th>Weight</th><th>Eyes</th><th>Group Size</th><th>Description</th></tr> 
+        <tr><th>Distance</th><th>Bank</th><th>ID#</th><th>Weight</th><th>Eyes</th><th>Blood Type</th><th>Description</th></tr> 
         {% for donor_sim in donors_sim %} 
-        <tr><td>{{ donor_sim['distance']}}</td><td>{{ donor_sim['bankid'] }}</td><td>{{ donor_sim['donorid']}}</td><td>{{ donor_sim['weight']}}</td><td>{{ donor_sim['eyecolor']}}</td><td>{{ donor_sim['offspcnt']}}</td><td style="font-size: 18px">{{ donor_sim['words']}}</td><td>
+        <tr><td>{{ donor_sim['distance']}}</td><td>{{ donor_sim['bankid'] }}</td><td>{{ donor_sim['donorid']}}</td><td>{{ donor_sim['weight']}}</td><td>{{ donor_sim['eyecolor']}}</td><td>{{ donor_sim['bloodtype']}}</td><td style="font-size: 18px">{{ donor_sim['words']}}</td><td>
         {% endfor %} 
       </table>
 
