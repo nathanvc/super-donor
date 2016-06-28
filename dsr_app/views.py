@@ -16,7 +16,7 @@ user = 'nathanvc'
 pswd = '5698'
 dbname = 'dsr_db3'
 con = None
-con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5432)
 W = np.load('LMNN_mat3.npy')
 print W.shape
 
@@ -71,6 +71,7 @@ word_dict['colleg']='college'
 word_dict['econom']='economics'
 word_dict['wavi']='wavy'
 word_dict['protest']='protestant'
+word_dict['cathol']='catholic'
 
 # return revised word if it is in dictionary (to correct for stemming readability)
 def get_full_word(e):
@@ -92,13 +93,28 @@ def eye_out(bank, id, con):
             label = label + e
         print label
     return label
-    
+
+# predict match or not (here simple threshold)
+def match_out(dist, wordcount, wordcount_2):
+    if dist < 2 and wordcount >= 4 and wordcount_2 >= 4:
+        return 'Likely'
+    if dist > 2:
+        return 'Unlikely' 
+    if wordcount_2 < 4 or wordcount < 4:
+        return 'Not enough info'
+
 # pull eye color for a particular donor
 def weight_out(bank, id, con):
     label = ''
     query = "SELECT weight FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     weight_temp = pd.read_sql_query(query,con)
-    return round(float(weight_temp['weight']),2)
+    return int(round(float(weight_temp['weight'])))
+    
+def year_out(bank, id, con):
+    label = ''
+    query = "SELECT offspyr FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    year_temp = pd.read_sql_query(query,con)
+    return int(round(float(year_temp['offspyr'])))
     
 # pull eye color for a particular donor
 def offsp_out(bank, id, con):
@@ -190,61 +206,6 @@ def getplot():
     img.seek(0)
     return send_file(img, mimetype='image/png')  
     
-# @app.route('/donorplot')
-# def getdonorplot():
-#     bank = request.args.get('bank_id')
-#     id = request.args.get('donor_id')
-#     
-#     fig = plt.figure()
-#     
-#     query = "SELECT bankid, donorid, offspcnt, bloodtype, weight FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
-#   
-#     query_results=pd.read_sql_query(query,con)
-#     
-#     # eye color value for this donor
-#     eyes_sp=query_results['eyes'][0]
-#   
-#     # calculate proportion of donors with this eye color 
-#     # (only among donors with eye color reported)
-#     don_eye_num_query = "SELECT COUNT(eyes) FROM dsr_db3 WHERE eyes = '%s' " % eyes_sp
-#     don_eye_num_from_sql = pd.read_sql_query(don_eye_num_query, con)
-#     
-#     don_eye_num = don_eye_num_from_sql['count'][0]
-# 
-#     don_eye_den_query = """
-#     SELECT COUNT(eyes) FROM dsr_db3 WHERE eyes IS NOT NULL
-#     """
-#     don_eye_den_from_sql = pd.read_sql_query(don_eye_den_query, con)
-#     don_eye_den = don_eye_den_from_sql['count'][0]
-#     
-#     don_val = don_eye_num / don_eye_den
-#     
-#     # calculate proportion of offspring conceived via donors with this eye color 
-#     # (only among donors with eye color reported)
-#     off_eye_num_query = "SELECT SUM(offspcnt) FROM dsr_db1 WHERE eyes = '%s' " % eyes_sp
-#     print off_eye_num_query
-#     off_eye_num_from_sql = pd.read_sql_query(off_eye_num_query, con)
-#     off_eye_num = off_eye_num_from_sql['sum'][0]
-# 
-#     off_eye_den_query = """
-#     SELECT SUM(offspcnt) FROM dsr_db1 WHERE eyes IS NOT NULL
-#     """
-#     print off_eye_den_query
-#     off_eye_den_from_sql = pd.read_sql_query(off_eye_den_query, con)
-#     off_eye_den = off_eye_den_from_sql['sum'][0]
-#     
-#     off_val = off_eye_num / off_eye_den
-# 
-#     plt.plot([don_val, off_val])
-#     
-#     ylim([0,1])
-#     
-#     canvas = FigureCanvas(fig)
-#     img = io.BytesIO()
-#     fig.savefig(img)
-#     img.seek(0)
-#     return send_file(img, mimetype='image/png')     
-
 @app.route('/output')
 def donor_output():
   #pull in the donor input fields and store
@@ -260,20 +221,19 @@ def donor_output():
   (words_lab, wordcount) = words_out(bank, id, con)
   bank_lab = bank_dict[bank]
   blood_lab = blood_out(bank, id, con)
+  year_lab = year_out(bank, id, con)
+  weight_lab = weight_out(bank, id, con)
+  
   #blood_lab = ''
 
   if len(query_results)==0:
         message = 'This donor is not in our database'
         return render_template("errorpage.html", detection_message = message)
 
-  elif wordcount <= 0:
-        message = 'There is not enough information for this donor to predict a match'
-        return render_template("errorpage.html", detection_message = message)
   else: 
-
       output = []
       for i in range(0,query_results.shape[0]):
-          output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=str(round(query_results.iloc[i]['weight'],2)), eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab, bloodtype=blood_lab))
+          output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=weight_lab, eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab, bloodtype=blood_lab, year=year_lab))
   
       minweight=str(query_results.iloc[i]['weight']-5)
       maxweight=str(query_results.iloc[i]['weight']+5)
@@ -344,15 +304,22 @@ def donor_output():
         weight_lab = weight_out(bank, id, con)
         offsp_lab = offsp_out(bank, id, con)
         blood_lab = blood_out(bank, id, con)
-        (words_lab, wordcount) = words_out(bank, id, con)
+        year_lab = year_out(bank, id, con)
+        (words_lab, wordcount_2) = words_out(bank, id, con)
+        dist_lab=round(prs_report[i,2],2)
+        match_lab = match_out(prs_report[i,2], wordcount, wordcount_2) 
         
-        dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=round(prs_report[i,2],2), words=words_lab, bloodtype=blood_lab)
+        dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=dist_lab, words=words_lab, bloodtype=blood_lab, year=year_lab, match=match_lab)
         print dict_temp
         output_sim.append(dict_temp)
             #print(i, output_sim[i])
   
-      if prs_report[0,2] < 2:
+      if wordcount <= 4:
+         message = 'There is not enough information to predict a match'
+  
+      elif prs_report[0,2] < 2:
         message = 'Your donor has a possible match'
+      
       else:
         message = 'Your donor does not have a likely match'  
   
