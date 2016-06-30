@@ -83,7 +83,7 @@ def get_full_word(e):
 # pull eye color for a particular donor
 def eye_out(bank, id, con):
     label = ''
-    query = "SELECT blue, brown, green, hazel FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT blue, brown, green, hazel FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     eye_temp = pd.read_sql_query(query,con)
     eye_list = ['blue','brown','green','hazel']
     for i,e in enumerate(eye_list):
@@ -106,27 +106,27 @@ def match_out(dist, wordcount, wordcount_2):
 # pull eye color for a particular donor
 def weight_out(bank, id, con):
     label = ''
-    query = "SELECT weight FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT weight FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     weight_temp = pd.read_sql_query(query,con)
     return int(round(float(weight_temp['weight'])))
     
 def year_out(bank, id, con):
     label = ''
-    query = "SELECT offspyr FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT offspyr FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     year_temp = pd.read_sql_query(query,con)
     return int(round(float(year_temp['offspyr'])))
     
 # pull eye color for a particular donor
 def offsp_out(bank, id, con):
     label = ''
-    query = "SELECT offspcnt FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT offspcnt FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     offsp_temp = pd.read_sql_query(query,con)
     return int(round(float(offsp_temp['offspcnt'])))
 
 # pull eye color for a particular donor
 def blood_out(bank, id, con):
     label = ''
-    query = """SELECT "a+", "b+", "o+", "ab+", "a-", "b-", "o-", "ab-" FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'""" % (bank, id)
+    query = """SELECT "a+", "b+", "o+", "ab+", "a-", "b-", "o-", "ab-" FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'""" % (bank, id)
     #query = "SELECT 'bloodtype=a+' FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     blood_temp = pd.read_sql_query(query,con)
     blood_list = ['a+', 'b+', 'o+', 'ab+', 'a-', 'b-', 'o-', 'ab-']
@@ -141,7 +141,7 @@ def blood_out(bank, id, con):
 # pull eye color for a particular donor
 def words_out(bank, id, con):
     label = ''
-    query = "SELECT * FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT * FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     word_temp = pd.read_sql_query(query,con)
     word_temp = word_temp.drop('index', 1)
     word_temp = word_temp.drop('offspcnt', 1)
@@ -188,7 +188,7 @@ def pres_page():
 @app.route('/getIDs')
 def pullbank():
     bankid = request.args.get('pullbank')
-    query = "SELECT donorid FROM dsr_db3 WHERE bankid='%s'" % (bankid) 
+    query = "SELECT donorid FROM dsr_db4 WHERE bankid='%s'" % (bankid) 
     
     restr_id_df=pd.read_sql_query(query, con)
     id_button_list=''
@@ -212,7 +212,7 @@ def donor_output():
   bank = request.args.get('bank_id')
   id = request.args.get('donor_id')
 
-  query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
+  query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
   print query
   
   query_results=pd.read_sql_query(query,con)
@@ -238,11 +238,11 @@ def donor_output():
       minweight=str(query_results.iloc[i]['weight']-5)
       maxweight=str(query_results.iloc[i]['weight']+5)
   
-      query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db3 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
+      query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db4 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
       query_sim_results=pd.read_sql_query(query_sim, con)
 
       # run model
-      d_orig_q = "SELECT * FROM dsr_db3 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
+      d_orig_q = "SELECT * FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
       d_orig = pd.read_sql_query(d_orig_q,con)
   
       prs_d=d_orig
@@ -258,7 +258,7 @@ def donor_output():
        
       prs_d=np.array(prs_d)
   
-      d_all_q = "SELECT * FROM dsr_db3"
+      d_all_q = "SELECT * FROM dsr_db4"
       d_all = pd.read_sql_query(d_all_q,con)
   
       prs_a=d_all
