@@ -141,9 +141,9 @@ def eye_out(bank, id, con):
 
 # predict match or not (here simple threshold)
 def match_out(dist, wordcount, wordcount_2):
-    if dist < 2 and wordcount >= 4 and wordcount_2 >= 4:
+    if dist < 2.3 and wordcount >= 4 and wordcount_2 >= 4:
         return 'Likely'
-    if dist > 2:
+    if dist > 2.3:
         return 'Unlikely' 
     if wordcount_2 < 4 or wordcount < 4:
         return 'Not enough info'
@@ -364,7 +364,7 @@ def donor_output():
       if wordcount <= 4:
          message = 'There is not enough information to predict a match'
   
-      elif prs_report[0,2] < 2:
+      elif prs_report[0,2] < 2.3:
         message = 'Your donor has a possible match'
       
       else:
