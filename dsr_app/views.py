@@ -14,10 +14,10 @@ import string
 
 user = 'nathanvc' 
 pswd = '5698'
-dbname = 'dsr_db3'
+dbname = 'dsr_db4'
 con = None
 con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
-W = np.load('LMNN_mat3.npy')
+W = np.load('LMNN_mat4.npy')
 print W.shape
 
 bank_dict={}
