@@ -72,6 +72,51 @@ word_dict['econom']='economics'
 word_dict['wavi']='wavy'
 word_dict['protest']='protestant'
 word_dict['cathol']='catholic'
+word_dict['japanes']='japanese'
+word_dict['electr']='electric'
+word_dict['biolog']='biology'
+word_dict['univers']='university'
+word_dict['philosophi']='philosophy'
+word_dict['cornel']='cornell'
+word_dict['histori']='history'
+word_dict['citi']='city'
+word_dict['cathol']='catholic'
+word_dict['softwar']='software'
+word_dict['degre']='degree'
+word_dict['chemistri']='chemistry'
+word_dict['dimpl']='dimple'
+word_dict['polit']='politic'
+word_dict['sibl']='sibling'
+word_dict['graduat']='graduate'
+word_dict['softbal']='softball'
+word_dict['favorit']='favorite'
+word_dict['astrophys']='astrophysics'
+word_dict['famili']='family'
+word_dict['justic']='justice'
+word_dict['languag']='language'
+word_dict['caucas']='caucasian'
+word_dict['curli']='curly'
+word_dict['engin']='engineer'
+word_dict['medic']='medical'
+word_dict['programm']='programming'
+word_dict['educ']='education'
+word_dict['movi']='movie'
+word_dict['militari']='military'
+word_dict['activ']='active'
+word_dict['comput']='compute'
+word_dict['scienc']='science'
+word_dict['manag']='manage'
+word_dict['wavi']='wavy'
+word_dict['blond']='blonde'
+word_dict['chines']='chinese'
+word_dict['colleg']='college'
+word_dict['photographi']='photography'
+word_dict['chiropract']='chirophractor'
+word_dict['restaur']='restaurant'
+word_dict['tenni']='tennis'
+word_dict['injuri']='injury'
+word_dict['retir']='retire'
+word_dict['studi']='study'
 
 # return revised word if it is in dictionary (to correct for stemming readability)
 def get_full_word(e):
@@ -188,12 +233,14 @@ def pres_page():
 @app.route('/getIDs')
 def pullbank():
     bankid = request.args.get('pullbank')
-    query = "SELECT donorid FROM dsr_db4 WHERE bankid='%s'" % (bankid) 
+    query = "SELECT bankid, donorid FROM dsr_db4 WHERE bankid='%s'" % (bankid) 
     
     restr_id_df=pd.read_sql_query(query, con)
     id_button_list=''
     for id in restr_id_df['donorid'].sort_values():
-        id_button_list=id_button_list + '<option value="' + id + '" name="donor_id">' + id + '</option>' 
+        (words_lab, wordcount) = words_out(bankid, id, con)
+        if wordcount > 4:
+            id_button_list=id_button_list + '<option value="' + id + '" name="donor_id">' + id + '</option>' 
     return id_button_list
 
 @app.route('/myplot')
