@@ -34,7 +34,7 @@ def get_full_word(e):
 # pull eye color for a particular donor
 def eye_out(bank, id, con):
     label = ''
-    query = "SELECT blue, brown, green, hazel FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT blue, brown, green, hazel FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     eye_temp = pd.read_sql_query(query,con)
     eye_list = ['blue','brown','green','hazel']
     for i,e in enumerate(eye_list):
