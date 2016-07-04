@@ -3,120 +3,26 @@ from flask import render_template
 from flask import request
 from flask import send_file
 from dsr_app import app
+import gen_dicts as gd
 import pandas as pd
 import psycopg2
-from a_Model import ModelIt
-import random
 import matplotlib.pyplot as plt
-#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvasimport io
 import numpy as np
-import string
 
+# Postgres database connection
 user = 'nathanvc' 
 pswd = '5698'
-dbname = 'dsr_db4'
+dbname = 'dsr_db5'
 con = None
 con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
-W = np.load('LMNN_mat4.npy')
-print W.shape
 
-bank_dict={}
-bank_dict['AndroNW']='Andrology Northwest Laboratory'
-bank_dict['AnnArbor']='Ann Arbor Reproductive Assoc'
-bank_dict['Biogenetics']='Biogenetics'
-bank_dict['BosIVF']='Boston IVF'
-bank_dict['Canam']='Can-Am Cryo'
-bank_dict['CCB']='California CryoBank'
-bank_dict['Cryobio']='Cryobiology'
-bank_dict['CryogamCO']='Cryogam Colorado'
-bank_dict['Cryogen']='Cryogenic Laboratory'
-bank_dict['Cryos']='Cryos International'
-bank_dict['CryosNY']='Cryos NY'
-bank_dict['EBMC']='East Bay Medical Center'
-bank_dict['ESB']='European Sperm Bank USA'
-bank_dict['Fairfax']='Fairfax'
-bank_dict['FCCA']='Fertility center of CA'
-bank_dict['FertFirst']='Fertility First'
-bank_dict['FINO']='Fertility Institute of New Orleans'
-bank_dict['Follas']='Follas Laboratories, Inc.'
-bank_dict['GeorgiaRS']='Georgia Reproductive Specialists'
-bank_dict['GG']='Growing Generations'
-bank_dict['HC']='Heredity Choice'
-bank_dict['Idant']='Idant'
-bank_dict['IntCryo']='International Cryogenics'
-bank_dict['MSB']='Manhattan Sperm Bank'
-bank_dict['Midwest']='Midwest Sperm Bank'
-bank_dict['NECC']='New England Cryogenic Center'
-bank_dict['NoCASB']='Northern CA Sperm Bank'
-bank_dict['NWCryo']='Northwest Cryobank'
-bank_dict['OHSU']='Oregon Health & Science University'
-bank_dict['Paces']='Paces'
-bank_dict['PRS']='Pacific Reproductive Services'
-bank_dict['ProTech']='Procreative Technologies'
-bank_dict['RepGerm']='Repository for Germinal Choice'
-bank_dict['Reprolab']='Repro Lab, Inc.'
-bank_dict['ReproRes']='Reproductive Resources'
-bank_dict['Repromed']='Repromed'
-bank_dict['RochReg']='Rochester Regional'
-bank_dict['RMC']='Rocky Mountain Cryobank'
-bank_dict['TSBC']='The Sperm Bank of CA'
-bank_dict['Tyler']='Tyler Medical Center'
-bank_dict['Valley']='Valley Cryobank'
-bank_dict['Xytex']='Xytex'
-bank_dict['Zygen']='Zygen'
+# Load metric-learning transformation of vector space
+W = np.load('LMNN_mat5.npy')
 
-word_dict={}
-word_dict['educ']='education'
-word_dict['colleg']='college'
-word_dict['econom']='economics'
-word_dict['wavi']='wavy'
-word_dict['protest']='protestant'
-word_dict['cathol']='catholic'
-word_dict['japanes']='japanese'
-word_dict['electr']='electric'
-word_dict['biolog']='biology'
-word_dict['univers']='university'
-word_dict['philosophi']='philosophy'
-word_dict['cornel']='cornell'
-word_dict['histori']='history'
-word_dict['citi']='city'
-word_dict['cathol']='catholic'
-word_dict['softwar']='software'
-word_dict['degre']='degree'
-word_dict['chemistri']='chemistry'
-word_dict['dimpl']='dimple'
-word_dict['polit']='politic'
-word_dict['sibl']='sibling'
-word_dict['graduat']='graduate'
-word_dict['softbal']='softball'
-word_dict['favorit']='favorite'
-word_dict['astrophys']='astrophysics'
-word_dict['famili']='family'
-word_dict['justic']='justice'
-word_dict['languag']='language'
-word_dict['caucas']='caucasian'
-word_dict['curli']='curly'
-word_dict['engin']='engineer'
-word_dict['medic']='medical'
-word_dict['programm']='programming'
-word_dict['educ']='education'
-word_dict['movi']='movie'
-word_dict['militari']='military'
-word_dict['activ']='active'
-word_dict['comput']='compute'
-word_dict['scienc']='science'
-word_dict['manag']='manage'
-word_dict['wavi']='wavy'
-word_dict['blond']='blonde'
-word_dict['chines']='chinese'
-word_dict['colleg']='college'
-word_dict['photographi']='photography'
-word_dict['chiropract']='chirophractor'
-word_dict['restaur']='restaurant'
-word_dict['tenni']='tennis'
-word_dict['injuri']='injury'
-word_dict['retir']='retire'
-word_dict['studi']='study'
+# Generate dictionaries used to convert database values
+# to display values
+bank_dict = gd.gen_bank_dict()
+word_dict = gd.gen_word_dict()
 
 # return revised word if it is in dictionary (to correct for stemming readability)
 def get_full_word(e):
@@ -141,37 +47,40 @@ def eye_out(bank, id, con):
 
 # predict match or not (here simple threshold)
 def match_out(dist, wordcount, wordcount_2):
-    if dist < 2 and wordcount >= 4 and wordcount_2 >= 4:
+    if dist < 2 and wordcount >=6 and wordcount_2 >= 6:
         return 'Likely'
-    if dist > 2:
+    if dist < 2 and wordcount >= 4 and wordcount_2 >= 4:
+        return 'Possibly'
+    elif dist > 2:
         return 'Unlikely' 
-    if wordcount_2 < 4 or wordcount < 4:
+    elif wordcount_2 < 4 or wordcount < 4:
         return 'Not enough info'
 
-# pull eye color for a particular donor
+# pull weight only for a particular donor
 def weight_out(bank, id, con):
     label = ''
-    query = "SELECT weight FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT weight FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     weight_temp = pd.read_sql_query(query,con)
     return int(round(float(weight_temp['weight'])))
-    
+
+# pull offspring birth year for a particular donor
 def year_out(bank, id, con):
     label = ''
-    query = "SELECT offspyr FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT offspyr FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     year_temp = pd.read_sql_query(query,con)
     return int(round(float(year_temp['offspyr'])))
     
-# pull eye color for a particular donor
+# pull offspring count for a particular donor
 def offsp_out(bank, id, con):
     label = ''
-    query = "SELECT offspcnt FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    query = "SELECT offspcnt FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     offsp_temp = pd.read_sql_query(query,con)
     return int(round(float(offsp_temp['offspcnt'])))
 
-# pull eye color for a particular donor
+# pull bloodtype for a particular donor
 def blood_out(bank, id, con):
     label = ''
-    query = """SELECT "a+", "b+", "o+", "ab+", "a-", "b-", "o-", "ab-" FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'""" % (bank, id)
+    query = """SELECT "a+", "b+", "o+", "ab+", "a-", "b-", "o-", "ab-" FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'""" % (bank, id)
     #query = "SELECT 'bloodtype=a+' FROM dsr_db2 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     blood_temp = pd.read_sql_query(query,con)
     blood_list = ['a+', 'b+', 'o+', 'ab+', 'a-', 'b-', 'o-', 'ab-']
@@ -183,11 +92,9 @@ def blood_out(bank, id, con):
         print label
     return label
 
-# pull eye color for a particular donor
-def words_out(bank, id, con):
-    label = ''
-    query = "SELECT * FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
-    word_temp = pd.read_sql_query(query,con)
+# function to pop non-word fields from the dataframe
+# when loaded as '*'
+def pop_nonwords(word_temp):
     word_temp = word_temp.drop('index', 1)
     word_temp = word_temp.drop('offspcnt', 1)
     word_temp = word_temp.drop('super', 1)
@@ -206,7 +113,20 @@ def words_out(bank, id, con):
     word_temp = word_temp.drop('blue', 1)
     word_temp = word_temp.drop('brown', 1)
     word_temp = word_temp.drop('green', 1)
-    word_temp = word_temp.drop('hazel', 1)    
+    word_temp = word_temp.drop('hazel', 1)
+    word_temp = word_temp.drop('offspyr', 1)
+    word_temp = word_temp.drop('aa', 1)
+    word_temp = word_temp.drop('jewish', 1)
+    word_temp = word_temp.drop('latino', 1)
+    word_temp = word_temp.drop('weight', 1)
+    return word_temp
+
+# pull description words for a particular donor
+def words_out(bank, id, con):
+    label = ''
+    query = "SELECT * FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    whole_vect = pd.read_sql_query(query,con)
+    word_temp = pop_nonwords(whole_vect)
 
     wordcount = 0
     for i,e in enumerate(word_temp.columns.values):
@@ -215,26 +135,41 @@ def words_out(bank, id, con):
                 label = label + ', '
             fw = get_full_word(e)
             label = label + fw
-            wordcount = wordcount+1            
-    print label
+            wordcount = wordcount+1
     return (label, wordcount)
 
-# function to query for donor IDs by ban
+# Count words in description actually included in our word space
+# Does not run query, need to input whole vector
+def words_count_noquery(whole_vect):
+    word_temp = pop_nonwords(whole_vect)
+    wordcount = 0
+    for i,e in enumerate(word_temp.columns.values):
+        if np.array(word_temp[e])==1:
+            if len(label) > 0:
+                label = label + ', '
+            fw = get_full_word(e)
+            label = label + fw
+            wordcount = wordcount+1
+    return (wordcount)
 
+# render the donor input page
 @app.route('/')     
 @app.route('/input')
 def donor_input():
     return render_template("input.html")
 
+# render presentation page
 @app.route('/presentation')     
 def pres_page():
     return render_template("presentation.html")
-    
+
+# function to select out donor id's for drop down display
+# selects only donors with description word count > 4
 @app.route('/getIDs')
 def pullbank():
     bankid = request.args.get('pullbank')
-    query = "SELECT bankid, donorid FROM dsr_db4 WHERE bankid='%s'" % (bankid) 
-    
+    query = "SELECT bankid, donorid FROM dsr_db5 WHERE bankid='%s'" % (bankid)
+
     restr_id_df=pd.read_sql_query(query, con)
     id_button_list=''
     for id in restr_id_df['donorid'].sort_values():
@@ -259,7 +194,7 @@ def donor_output():
   bank = request.args.get('bank_id')
   id = request.args.get('donor_id')
 
-  query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
+  query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
   print query
   
   query_results=pd.read_sql_query(query,con)
@@ -285,11 +220,11 @@ def donor_output():
       minweight=str(query_results.iloc[i]['weight']-5)
       maxweight=str(query_results.iloc[i]['weight']+5)
   
-      query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db4 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
+      query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
       query_sim_results=pd.read_sql_query(query_sim, con)
 
       # run model
-      d_orig_q = "SELECT * FROM dsr_db4 WHERE bankid='%s' AND donorid='%s'" % (bank, id) 
+      d_orig_q = "SELECT * FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
       d_orig = pd.read_sql_query(d_orig_q,con)
   
       prs_d=d_orig
@@ -305,7 +240,7 @@ def donor_output():
        
       prs_d=np.array(prs_d)
   
-      d_all_q = "SELECT * FROM dsr_db4"
+      d_all_q = "SELECT * FROM dsr_db5"
       d_all = pd.read_sql_query(d_all_q,con)
   
       prs_a=d_all
