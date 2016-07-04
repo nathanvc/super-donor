@@ -119,6 +119,7 @@ def pop_nonwords(word_temp):
     word_temp = word_temp.drop('jewish', 1)
     word_temp = word_temp.drop('latino', 1)
     word_temp = word_temp.drop('weight', 1)
+    word_temp = word_temp.drop('wordcount', 1)
     return word_temp
 
 # pull description words for a particular donor
@@ -234,8 +235,9 @@ def donor_output():
       prs_d = prs_d.drop('alltext', 1)
       prs_d = prs_d.drop('bankid', 1)
       prs_d = prs_d.drop('donorid', 1)
-      prs_d = prs_d.drop('eyeexist', 1) 
-      
+      prs_d = prs_d.drop('eyeexist', 1)
+      prs_d = prs_d.drop('wordcount', 1)
+
       print prs_d.columns.values
        
       prs_d=np.array(prs_d)
@@ -251,6 +253,7 @@ def donor_output():
       prs_a = prs_a.drop('bankid', 1)
       prs_a = prs_a.drop('donorid', 1)
       prs_a = prs_a.drop('eyeexist', 1)
+      prs_a = prs_a.drop('wordcount', 1)
       prs_a=np.array(prs_a)
   
       # donor info
