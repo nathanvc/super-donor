@@ -139,20 +139,6 @@ def words_out(bank, id, con):
             wordcount = wordcount+1
     return (label, wordcount)
 
-# Count words in description actually included in our word space
-# Does not run query, need to input whole vector
-def words_count_noquery(whole_vect):
-    word_temp = pop_nonwords(whole_vect)
-    wordcount = 0
-    for i,e in enumerate(word_temp.columns.values):
-        if np.array(word_temp[e])==1:
-            if len(label) > 0:
-                label = label + ', '
-            fw = get_full_word(e)
-            label = label + fw
-            wordcount = wordcount+1
-    return (wordcount)
-
 # render the donor input page
 @app.route('/')     
 @app.route('/input')
@@ -169,14 +155,13 @@ def pres_page():
 @app.route('/getIDs')
 def pullbank():
     bankid = request.args.get('pullbank')
-    query = "SELECT bankid, donorid FROM dsr_db5 WHERE bankid='%s'" % (bankid)
-
+    query = "SELECT bankid, donorid, wordcount FROM dsr_db5 WHERE bankid='%s' AND wordcount > 4" % (bankid)
     restr_id_df=pd.read_sql_query(query, con)
     id_button_list=''
     for id in restr_id_df['donorid'].sort_values():
-        (words_lab, wordcount) = words_out(bankid, id, con)
-        if wordcount > 4:
-            id_button_list=id_button_list + '<option value="' + id + '" name="donor_id">' + id + '</option>' 
+        #(words_lab, wordcount) = words_out(bankid, id, con)
+        #if wordcount > 4:
+        id_button_list=id_button_list + '<option value="' + id + '" name="donor_id">' + id + '</option>'
     return id_button_list
 
 @app.route('/myplot')
