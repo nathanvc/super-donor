@@ -58,8 +58,8 @@
       <file leaf-file-name="presentation_withfaq.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="120" column="93" selection-start-line="120" selection-start-column="93" selection-end-line="120" selection-end-column="93" />
+            <state relative-caret-position="415">
+              <caret line="121" column="24" selection-start-line="121" selection-start-column="24" selection-end-line="121" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -339,8 +339,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="120" column="93" selection-start-line="120" selection-start-column="93" selection-end-line="120" selection-end-column="93" />
+        <state relative-caret-position="415">
+          <caret line="121" column="24" selection-start-line="121" selection-start-column="24" selection-end-line="121" selection-end-column="24" />
           <folding />
         </state>
       </provider>
