@@ -176,98 +176,90 @@ def getplot():
     
 @app.route('/output')
 def donor_output():
-  #pull in the donor input fields and store
-  bank = request.args.get('bank_id')
-  id = request.args.get('donor_id')
+    #pull in the donor input fields and store
+    bank = request.args.get('bank_id')
+    id = request.args.get('donor_id')
 
-  query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
-  print query
+    query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
   
-  query_results=pd.read_sql_query(query,con)
+    query_results=pd.read_sql_query(query,con)
   
-  eye_lab = eye_out(bank, id, con)
-  (words_lab, wordcount) = words_out(bank, id, con)
-  bank_lab = bank_dict[bank]
-  blood_lab = blood_out(bank, id, con)
-  year_lab = year_out(bank, id, con)
-  weight_lab = weight_out(bank, id, con)
-  
-  #blood_lab = ''
+    eye_lab = eye_out(bank, id, con)
+    (words_lab, wordcount) = words_out(bank, id, con)
+    bank_lab = bank_dict[bank]
+    blood_lab = blood_out(bank, id, con)
+    year_lab = year_out(bank, id, con)
+    weight_lab = weight_out(bank, id, con)
 
-  if len(query_results)==0:
+    if len(query_results)==0:
         message = 'This donor is not in our database'
         return render_template("errorpage.html", detection_message = message)
 
-  else: 
-      output = []
-      for i in range(0,query_results.shape[0]):
-          output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=weight_lab, eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab, bloodtype=blood_lab, year=year_lab))
+    else:
+        output = []
+        for i in range(0,query_results.shape[0]):
+            output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=weight_lab, eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab, bloodtype=blood_lab, year=year_lab))
   
-      minweight=str(query_results.iloc[i]['weight']-5)
-      maxweight=str(query_results.iloc[i]['weight']+5)
+    minweight=str(query_results.iloc[i]['weight']-5)
+    maxweight=str(query_results.iloc[i]['weight']+5)
   
-      query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
-      query_sim_results=pd.read_sql_query(query_sim, con)
+    query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
+    query_sim_results=pd.read_sql_query(query_sim, con)
 
-      # run model
-      d_orig_q = "SELECT * FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
-      d_orig = pd.read_sql_query(d_orig_q,con)
+    # run model
+    d_orig_q = "SELECT * FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
+    d_orig = pd.read_sql_query(d_orig_q,con)
   
-      prs_d=d_orig
-      prs_d = prs_d.drop('index', 1)
-      prs_d = prs_d.drop('offspcnt', 1)
-      prs_d = prs_d.drop('super', 1)
-      prs_d = prs_d.drop('alltext', 1)
-      prs_d = prs_d.drop('bankid', 1)
-      prs_d = prs_d.drop('donorid', 1)
-      prs_d = prs_d.drop('eyeexist', 1)
-      prs_d = prs_d.drop('wordcount', 1)
+    prs_d=d_orig
+    prs_d = prs_d.drop('index', 1)
+    prs_d = prs_d.drop('offspcnt', 1)
+    prs_d = prs_d.drop('super', 1)
+    prs_d = prs_d.drop('alltext', 1)
+    prs_d = prs_d.drop('bankid', 1)
+    prs_d = prs_d.drop('donorid', 1)
+    prs_d = prs_d.drop('eyeexist', 1)
+    prs_d = prs_d.drop('wordcount', 1)
 
-      print prs_d.columns.values
-       
-      prs_d=np.array(prs_d)
+    prs_d=np.array(prs_d)
   
-      d_all_q = "SELECT * FROM dsr_db5"
-      d_all = pd.read_sql_query(d_all_q,con)
+    d_all_q = "SELECT * FROM dsr_db5"
+    d_all = pd.read_sql_query(d_all_q,con)
   
-      prs_a=d_all
-      prs_a = prs_a.drop('index', 1)
-      prs_a = prs_a.drop('offspcnt', 1)
-      prs_a = prs_a.drop('super', 1)
-      prs_a = prs_a.drop('alltext', 1)
-      prs_a = prs_a.drop('bankid', 1)
-      prs_a = prs_a.drop('donorid', 1)
-      prs_a = prs_a.drop('eyeexist', 1)
-      prs_a = prs_a.drop('wordcount', 1)
-      prs_a=np.array(prs_a)
+    prs_a=d_all
+    prs_a = prs_a.drop('index', 1)
+    prs_a = prs_a.drop('offspcnt', 1)
+    prs_a = prs_a.drop('super', 1)
+    prs_a = prs_a.drop('alltext', 1)
+    prs_a = prs_a.drop('bankid', 1)
+    prs_a = prs_a.drop('donorid', 1)
+    prs_a = prs_a.drop('eyeexist', 1)
+    prs_a = prs_a.drop('wordcount', 1)
+    prs_a=np.array(prs_a)
   
-      # donor info
-      prs_dinfo = pd.concat([d_all['bankid'], d_all['donorid']], axis=1)
-      #print prs_dinfo.head
+    # donor info
+    prs_dinfo = pd.concat([d_all['bankid'], d_all['donorid']], axis=1)
   
-      # Calculate all distances  
-      dist_cv=[]
-      prs_a_df=prs_a
-      prs_a=np.array(prs_a)
-      for i in range(prs_a.shape[0]):
-        dist=prs_d[:]-prs_a[i,:] 
+    # Calculate all distances
+    dist_cv=[]
+    prs_a_df=prs_a
+    prs_a=np.array(prs_a)
+    for i in range(prs_a.shape[0]):
+        dist=prs_d[:]-prs_a[i,:]
         lmnn_dist=float(np.sqrt(np.dot(dist,np.dot(W,dist.T))))
         dist_cv.append(lmnn_dist)
   
-      dist_dict={}
-      dist_dict['distance']=dist_cv
-      df_temp=pd.DataFrame.from_dict(dist_dict)
+    dist_dict={}
+    dist_dict['distance']=dist_cv
+    df_temp=pd.DataFrame.from_dict(dist_dict)
   
-      prs_dinfo=pd.concat([prs_dinfo,df_temp],axis=1)
-  
-      print prs_dinfo.columns.values
-  
-      # sort by smallest distance
-      prs_report = np.array(prs_dinfo.sort_values(by='distance').iloc[1:12])
+    prs_dinfo=pd.concat([prs_dinfo,df_temp],axis=1)
 
-      #del output_sim
-      output_sim=[]
-      for i in range(5):
+    # sort by smallest distance
+    prs_report = np.array(prs_dinfo.sort_values(by='distance').iloc[1:12])
+
+    output_sim=[]
+    match_lab_all=[]
+    for i in range(5):
         bank=prs_report[i,0]
         id=prs_report[i,1]
         eye_lab = eye_out(bank, id, con)
@@ -277,24 +269,30 @@ def donor_output():
         year_lab = year_out(bank, id, con)
         (words_lab, wordcount_2) = words_out(bank, id, con)
         dist_lab=round(prs_report[i,2],2)
-        match_lab = match_out(prs_report[i,2], wordcount, wordcount_2) 
-        
+        match_lab = match_out(prs_report[i,2], wordcount, wordcount_2)
+        match_lab_all.append(match_lab)
+
         dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=dist_lab, words=words_lab, bloodtype=blood_lab, year=year_lab, match=match_lab)
         print dict_temp
         output_sim.append(dict_temp)
             #print(i, output_sim[i])
+
+    is_match=0
+    for m in match_lab_all:
+        if m == 'Likely' or m == 'Possibly':
+            is_match=1
+
+    if wordcount <= 4:
+        message = 'There is not enough information to predict a match'
   
-      if wordcount <= 4:
-         message = 'There is not enough information to predict a match'
-  
-      elif prs_report[0,2] < 2:
-        message = 'Your donor has a possible match'
+    #elif prs_report[0,2] < 2:
+    elif is_match == 1:
+        message = 'Your donor has a potential match'
       
-      else:
-        message = 'Your donor does not have a likely match'  
-  
-      #the_result = ModelIt(patient,births)
-      return render_template("output.html", donors = output, donors_sim = output_sim, detection_message = message, the_result = [])    
+    else:
+        message = 'Your donor does not have a potential match'
+
+    return render_template("output.html", donors = output, donors_sim = output_sim, detection_message = message, the_result = [])
     
   
     
