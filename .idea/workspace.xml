@@ -58,8 +58,18 @@
       <file leaf-file-name="presentation_withfaq.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="80" column="110" selection-start-line="80" selection-start-column="110" selection-end-line="80" selection-end-column="110" />
+            <state relative-caret-position="175">
+              <caret line="120" column="93" selection-start-line="120" selection-start-column="93" selection-end-line="120" selection-end-column="93" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="input.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dsr_app/templates/input.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="140" column="6" selection-start-line="140" selection-start-column="6" selection-end-line="140" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -111,7 +121,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="90" />
+    <option name="x" value="216" />
     <option name="y" value="23" />
     <option name="width" value="1281" />
     <option name="height" value="873" />
@@ -237,7 +247,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="90" y="23" width="1281" height="873" extended-state="0" />
+    <frame x="216" y="23" width="1281" height="873" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22404371" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -319,10 +329,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/dsr_app/templates/input.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="140" column="6" selection-start-line="140" selection-start-column="6" selection-end-line="140" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="80" column="110" selection-start-line="80" selection-start-column="110" selection-end-line="80" selection-end-column="110" />
+        <state relative-caret-position="175">
+          <caret line="120" column="93" selection-start-line="120" selection-start-column="93" selection-end-line="120" selection-end-column="93" />
           <folding />
         </state>
       </provider>
