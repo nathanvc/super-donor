@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ae2c560-94b4-4ab1-bcef-cf187fd7c6e4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dsr_app/views.py" afterPath="$PROJECT_DIR$/dsr_app/views.py" />
     </list>
     <ignored path="super-donor.iws" />
@@ -125,8 +124,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="766" />
-    <option name="y" value="23" />
+    <option name="x" value="341" />
+    <option name="y" value="622" />
     <option name="width" value="1281" />
     <option name="height" value="873" />
   </component>
@@ -251,7 +250,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="766" y="23" width="1281" height="873" extended-state="0" />
+    <frame x="341" y="622" width="1281" height="873" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22404371" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
