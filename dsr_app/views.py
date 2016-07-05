@@ -14,7 +14,7 @@ user = 'nathanvc'
 pswd = '5698'
 dbname = 'dsr_db5'
 con = None
-con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5432)
 
 # Load metric-learning transformation of vector space
 W = np.load('LMNN_mat5.npy')
@@ -161,7 +161,7 @@ def donor_input():
 # render presentation page
 @app.route('/presentation')     
 def pres_page():
-    return render_template("presentation.html")
+    return render_template("presentation_withfaq.html")
 
 # function to select out donor id's for drop down display
 # selects only donors with description word count > 4
