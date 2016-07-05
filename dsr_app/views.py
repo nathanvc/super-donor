@@ -14,7 +14,7 @@ user = 'nathanvc'
 pswd = '5698'
 dbname = 'dsr_db5'
 con = None
-con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5432)
+con = psycopg2.connect(database = dbname, user = user, host='localhost', password=pswd, port=5433)
 
 # Load metric-learning transformation of vector space
 W = np.load('LMNN_mat5.npy')
