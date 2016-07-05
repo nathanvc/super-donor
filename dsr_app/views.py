@@ -246,16 +246,21 @@ def donor_output():
     # donor bank & ID information
     dist_dict={}
     dist_dict['distance']=dist_cv
+    dist_dict['wordcount']=d_all['wordcount']
     df_temp=pd.DataFrame.from_dict(dist_dict)
     prs_dinfo=pd.concat([prs_dinfo,df_temp],axis=1)
 
+    # restrict to donor with enough description to rank
+    prs_enoughinfo=prs_dinfo.query('wordcount>=4')
+
     # sort by smallest distance
-    prs_report = np.array(prs_dinfo.sort_values(by='distance').iloc[1:12])
+    #prs_report = np.array(prs_dinfo.sort_values(by='distance').iloc[1:12])
+    prs_report = np.array(prs_enoughinfo.sort_values(by='distance').iloc[1:12])
 
     # pull the 5 closest distances
     output_sim=[]
     match_lab_all=[]
-    for i in range(5):
+    for i in range(10):
         bank=prs_report[i,0]
         id=prs_report[i,1]
         eye_lab = eye_out(bank, id, con)
