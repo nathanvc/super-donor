@@ -139,6 +139,19 @@ def words_out(bank, id, con):
             wordcount = wordcount+1
     return (label, wordcount)
 
+# function to pop non-feature fields from the full df
+# when imported as *
+def pop_nonfeat(prs):
+    prs = prs.drop('index', 1)
+    prs = prs.drop('offspcnt', 1)
+    prs = prs.drop('super', 1)
+    prs = prs.drop('alltext', 1)
+    prs = prs.drop('bankid', 1)
+    prs = prs.drop('donorid', 1)
+    prs = prs.drop('eyeexist', 1)
+    prs = prs.drop('wordcount', 1)
+    return prs
+
 # render the donor input page
 @app.route('/')     
 @app.route('/input')
@@ -164,26 +177,18 @@ def pullbank():
         id_button_list=id_button_list + '<option value="' + id + '" name="donor_id">' + id + '</option>'
     return id_button_list
 
-@app.route('/myplot')
-def getplot():
-    fig = plt.figure()
-    plt.plot(range(3))
-    canvas = FigureCanvas(fig)
-    img = io.BytesIO()
-    fig.savefig(img)
-    img.seek(0)
-    return send_file(img, mimetype='image/png')  
-    
+# Render output page for entered donowr
 @app.route('/output')
 def donor_output():
+
     #pull in the donor input fields and store
     bank = request.args.get('bank_id')
     id = request.args.get('donor_id')
 
     query = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
-  
     query_results=pd.read_sql_query(query,con)
-  
+
+    # pull and format fields for display on web page
     eye_lab = eye_out(bank, id, con)
     (words_lab, wordcount) = words_out(bank, id, con)
     bank_lab = bank_dict[bank]
@@ -191,72 +196,63 @@ def donor_output():
     year_lab = year_out(bank, id, con)
     weight_lab = weight_out(bank, id, con)
 
+    # render error page if donor not in DB (shouldn't happen with automatic dropdown loading)
     if len(query_results)==0:
         message = 'This donor is not in our database'
         return render_template("errorpage.html", detection_message = message)
 
+    # define fields displayed on output page
     else:
         output = []
         for i in range(0,query_results.shape[0]):
-            output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'], weight=weight_lab, eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']), words=words_lab, bloodtype=blood_lab, year=year_lab))
-  
-    minweight=str(query_results.iloc[i]['weight']-5)
-    maxweight=str(query_results.iloc[i]['weight']+5)
-  
-    query_sim = "SELECT bankid, donorid, offspcnt, weight FROM dsr_db5 WHERE weight BETWEEN '%s' AND '%s'" % (minweight, maxweight)
-    query_sim_results=pd.read_sql_query(query_sim, con)
+            output.append(dict(bankid=bank_lab, donorid=query_results.iloc[i]['donorid'],
+                               weight=weight_lab, eyecolor = eye_lab, offspcnt=str(query_results.iloc[i]['offspcnt']),
+                               words=words_lab, bloodtype=blood_lab, year=year_lab))
 
-    # run model
+    # run model to determine large margin nearest neighbor distance for all donors in DB
+    # ----
+    # Pull all features for input donor
     d_orig_q = "SELECT * FROM dsr_db5 WHERE bankid='%s' AND donorid='%s'" % (bank, id)
     d_orig = pd.read_sql_query(d_orig_q,con)
   
     prs_d=d_orig
-    prs_d = prs_d.drop('index', 1)
-    prs_d = prs_d.drop('offspcnt', 1)
-    prs_d = prs_d.drop('super', 1)
-    prs_d = prs_d.drop('alltext', 1)
-    prs_d = prs_d.drop('bankid', 1)
-    prs_d = prs_d.drop('donorid', 1)
-    prs_d = prs_d.drop('eyeexist', 1)
-    prs_d = prs_d.drop('wordcount', 1)
-
+    # remove non-features from * and convert to np.array
+    prs_d=pop_nonfeat(prs_d)
     prs_d=np.array(prs_d)
-  
+
+    # Load all donors in database
+    # ----
     d_all_q = "SELECT * FROM dsr_db5"
     d_all = pd.read_sql_query(d_all_q,con)
   
     prs_a=d_all
-    prs_a = prs_a.drop('index', 1)
-    prs_a = prs_a.drop('offspcnt', 1)
-    prs_a = prs_a.drop('super', 1)
-    prs_a = prs_a.drop('alltext', 1)
-    prs_a = prs_a.drop('bankid', 1)
-    prs_a = prs_a.drop('donorid', 1)
-    prs_a = prs_a.drop('eyeexist', 1)
-    prs_a = prs_a.drop('wordcount', 1)
+    # remove non-features and convert to np.array
+    prs_a = pop_nonfeat(prs_a)
     prs_a=np.array(prs_a)
   
-    # donor info
+    # data frame with only donor bank and id information
     prs_dinfo = pd.concat([d_all['bankid'], d_all['donorid']], axis=1)
   
     # Calculate all distances
     dist_cv=[]
-    prs_a_df=prs_a
     prs_a=np.array(prs_a)
     for i in range(prs_a.shape[0]):
         dist=prs_d[:]-prs_a[i,:]
+        # LMNN distance, W is matrix loaded at top of file, learned via LMNN classification
         lmnn_dist=float(np.sqrt(np.dot(dist,np.dot(W,dist.T))))
         dist_cv.append(lmnn_dist)
-  
+
+    # make dataframe containing LMNN distance for all donors from entered donor and combine with
+    # donor bank & ID information
     dist_dict={}
     dist_dict['distance']=dist_cv
     df_temp=pd.DataFrame.from_dict(dist_dict)
-  
     prs_dinfo=pd.concat([prs_dinfo,df_temp],axis=1)
 
     # sort by smallest distance
     prs_report = np.array(prs_dinfo.sort_values(by='distance').iloc[1:12])
 
+    # pull the 5 closest distances
     output_sim=[]
     match_lab_all=[]
     for i in range(5):
@@ -272,11 +268,12 @@ def donor_output():
         match_lab = match_out(prs_report[i,2], wordcount, wordcount_2)
         match_lab_all.append(match_lab)
 
-        dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab, distance=dist_lab, words=words_lab, bloodtype=blood_lab, year=year_lab, match=match_lab)
-        print dict_temp
+        # format into dictionary in order to send to output html page
+        dict_temp=dict(bankid=bank_dict[bank], donorid=id, weight=weight_lab, eyecolor=eye_lab, offspcnt=offsp_lab,
+                       distance=dist_lab, words=words_lab, bloodtype=blood_lab, year=year_lab, match=match_lab)
         output_sim.append(dict_temp)
-            #print(i, output_sim[i])
 
+    # define message for top of page
     is_match=0
     for m in match_lab_all:
         if m == 'Likely' or m == 'Possibly':
@@ -292,6 +289,7 @@ def donor_output():
     else:
         message = 'Your donor does not have a potential match'
 
+    # send information to output page
     return render_template("output.html", donors = output, donors_sim = output_sim, detection_message = message, the_result = [])
     
   
