@@ -168,7 +168,7 @@ def pres_page():
 @app.route('/getIDs')
 def pullbank():
     bankid = request.args.get('pullbank')
-    query = "SELECT bankid, donorid, wordcount FROM dsr_db5 WHERE bankid='%s' AND wordcount > 4" % (bankid)
+    query = "SELECT bankid, donorid, wordcount FROM dsr_db5 WHERE bankid='%s' AND wordcount >= 4" % (bankid)
     restr_id_df=pd.read_sql_query(query, con)
     id_button_list=''
     for id in restr_id_df['donorid'].sort_values():
@@ -284,7 +284,7 @@ def donor_output():
         if m == 'Likely' or m == 'Possibly':
             is_match=1
 
-    if wordcount <= 4:
+    if wordcount < 4:
         message = 'There is not enough information to predict a match'
   
     #elif prs_report[0,2] < 2:
