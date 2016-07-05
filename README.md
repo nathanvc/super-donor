@@ -1,5 +1,5 @@
 # super-donor
-Web app interface for project to detect distinct donors IDs in the [Donor Sibling Registry](http://donorsiblingregistry.com) most likely to represent the same person. Project built as part of the [Insight Health Data Science](http://insighthealthdata.com) program. Distance prediction uses Large Margin Nearest Neighbor metric-learning. File LMNN_mat5 contains the metric learned space transformation that produces the distance measure. 
+Web app interface for a project to detect distinct donors IDs in the [Donor Sibling Registry](http://donorsiblingregistry.com) most likely to represent the same person. Project built as part of the [Insight Health Data Science](http://insighthealthdata.com) program. Distance prediction uses Large Margin Nearest Neighbor metric-learning. File LMNN_mat5 contains the metric learned space transformation that produces the distance measure. 
 
 See web-site at [http//:super-donor.com] (https://super-donor.com)
 
