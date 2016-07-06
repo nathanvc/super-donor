@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ae2c560-94b4-4ab1-bcef-cf187fd7c6e4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html" afterPath="$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dsr_app/templates/output.html" afterPath="$PROJECT_DIR$/dsr_app/templates/output.html" />
     </list>
     <ignored path="super-donor.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,11 +38,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="output.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="output.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dsr_app/templates/output.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-360">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="540">
+              <caret line="92" column="80" selection-start-line="92" selection-start-column="80" selection-end-line="92" selection-end-column="80" />
               <folding />
             </state>
           </provider>
@@ -58,7 +58,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="presentation_withfaq.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="presentation_withfaq.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="370">
@@ -120,12 +120,13 @@
         <option value="$PROJECT_DIR$/dsr_app/templates/presentation.html" />
         <option value="$PROJECT_DIR$/dsr_app/views.py" />
         <option value="$PROJECT_DIR$/dsr_app/templates/presentation_withfaq.html" />
+        <option value="$PROJECT_DIR$/dsr_app/templates/output.html" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="115" />
-    <option name="y" value="28" />
+    <option name="x" value="240" />
+    <option name="y" value="23" />
     <option name="width" value="1281" />
     <option name="height" value="873" />
   </component>
@@ -250,7 +251,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="115" y="28" width="1281" height="873" extended-state="0" />
+    <frame x="240" y="23" width="1281" height="873" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22404371" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -306,14 +307,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dsr_app/templates/output.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-360">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dsr_app/templates/presentation.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -344,6 +337,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="370">
           <caret line="106" column="99" selection-start-line="106" selection-start-column="99" selection-end-line="106" selection-end-column="99" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dsr_app/templates/output.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="92" column="80" selection-start-line="92" selection-start-column="80" selection-end-line="92" selection-end-column="80" />
           <folding />
         </state>
       </provider>
